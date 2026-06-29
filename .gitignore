@@ -1,0 +1,27 @@
+# Local project files
+network-sentinel-ascii.txt
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# VS Code
+.vscode/
+
+# Environment variables
+.env
+
+# Log files
+*.log
+
+# Temporary files
+*.tmp
+
+# Docker
+*.pid
+
+# Python cache (future-proofing)
+__pycache__/
+
+# macOS
+.DS_Store
