@@ -1,6 +1,38 @@
+ ```                                                          
+                           *%#%*                           
+                       =%#=     -#%+                       
+                 .#%%*-   .%%%%%:   :*%%#:                 
+          .=#%%#-     -#%%%%%%%%%%%#=     -*%%#=.          
+       %*:      =%%%%%%%%%%%%%%%%%%%%%%%%%+      :+%       
+       %  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  %       
+       %  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  %       
+       %  %%%%:   :#%%%%%*   :%%%#+=========+%%%%  %       
+       %  %%%%      %%%%%=    %%             %%%%  %       
+       %: #%%%       #%%%=    %:    ::.:::::-%%%# .%       
+       ** =%%%        *%%=    %.   %%%%%%%%%%%%%= **       
+       :% .%%%         *%=    %.   #%%%%%%%%%%%%: %:       
+        %  %%%          +=    %=          :#%%%%  %        
+        #+ #%%     %          %%*           *%%# =#        
+        +#  %%     %%.        %%%%%%%%%%=    %%  #=        
+         %- *%     %%%        %%%%%%%%%%*    %* -%         
+          %  ##    %%%%=      %*=======-    *%  %          
+          -%  %+   %%%%%+     %:           =%: %-          
+           #* .%*  %%%%%%+    %=..........=%- *#           
+            %*  %%:%%%%%%%%   %%%%%%%%%%%%%: +%            
+             *#  %%%%%%%%%%*  %%%%%%%%%%%%. #*             
+              *#  %%%%%%%%%%% %%%%%%%%%%%  ##              
+               :%: -%%%%%%%%%%%%%%%%%%%= .%:               
+                 %*  %%%%%%%%%%%%%%%%%  +%                 
+                  -%. :%%%%%%%%%%%%%=  %-                  
+                    %#  =%%%%%%%%%+  #%                    
+                      ##  =%%%%%*  ##                      
+                        %*  =%+  *%                        
+                          ##   *#                          
+                            *%*                            
+                                                           
+```
+
 \# Network Sentinel
-
-
 
 AI-Assisted Network Security Monitoring for Small Business and Home Networks
 
@@ -14,39 +46,31 @@ Network Sentinel is a Dockerized network security monitoring platform designed f
 
 
 
-The project is being developed as an IT Specialist Capstone Project for the Master of Science in Information Technology program at Purdue Global University.
+## About
+
+Network Sentinel is being developed as the IT599 IT Specialist Capstone Project for the Master of Science in Information Technology (Cybersecurity concentration) at Purdue Global University.
 
 
 
-\## Technologies
+## Technology Stack
 
 
 
-\### Current Environment
+### Current Environment
+
+- Ubuntu Server
+- Docker
+- Suricata IDS
+- Grafana
+- Prometheus
+- Uptime Kuma
+- Portainer
 
 
 
-\* Ubuntu Server
+### Planned Technologies
 
-\* Docker
-
-\* Portainer
-
-\* Grafana
-
-\* Prometheus
-
-\* Uptime Kuma
-
-
-
-\### Under Evaluation
-
-
-
-\* Wazuh
-
-\* AI-assisted alert explanation component
+- AI-assisted alert explanation component
 
 
 
@@ -86,23 +110,32 @@ The project is being developed as an IT Specialist Capstone Project for the Mast
 
 
 
-\### Secondary Stakeholders
+### Secondary Stakeholders
 
+* Homelab enthusiasts
+* Home users
+* Remote workers
 
+## Project Status
 
-\* Homelab enthusiasts
+🚧 Active Development
 
-\* Home users
+### Completed
 
-\* Remote workers
+- GitHub repository created
+- Docker project structure established
+- Suricata IDS deployed and operational
+- Initial documentation completed
 
+### Current Focus
 
+- Integrating Suricata with Grafana
+- Building the Network Sentinel web portal
+- Developing AI-assisted alert explanations
 
-\## Project Status
+### Planned
 
-
-
-Project planning and requirements definition phase.
-
-
-
+- AI-powered alert analysis
+- One-command deployment script
+- Dashboard enhancements
+- Version 1.0 release
