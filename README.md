@@ -53,7 +53,7 @@ The Security Overview Dashboard displays live security events collected by Suric
 
 > Sensitive information has been redacted from the screenshot.
 
-![Network Sentinel Security Dashboard](Screenshots/Dashboardv1_redacted.png)
+![Network Sentinel Security Dashboard](Screenshots/Dashboardv1_Redacted.png)
 
 
 ## About
