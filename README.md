@@ -45,7 +45,7 @@ AI-Assisted Network Security Monitoring for Small Business and Home Networks
 Network Sentinel is a Dockerized network security monitoring platform designed for small businesses and advanced home users. The platform combines monitoring, alerting, visualization, and AI-assisted explanations to help users understand security events and network activity.
 
 
-## Dashboard Preview
+## Dashboard Previews
 
 ### Security Overview Dashboard
 
@@ -54,6 +54,12 @@ The Security Overview Dashboard displays live security events collected by Suric
 > Sensitive information has been redacted from the screenshot.
 
 ![Network Sentinel Security Dashboard](Screenshots/Dashboardv1_Redacted.png)
+
+## System Health Dashboard
+
+The System Health Dashboard provides administrators with a real-time view of the monitoring platform. It displays CPU utilization, memory utilization, system uptime, historical performance trends, and network throughput to help verify that Network Sentinel is operating reliably.
+
+![System Health Dashboard](Screenshots/SystemHealthDashboard.png)
 
 
 ## About
@@ -73,6 +79,7 @@ Network Sentinel is being developed as the IT599 IT Specialist Capstone Project 
 - Suricata IDS
 - Grafana
 - Prometheus
+- Loki
 - Uptime Kuma
 - Portainer
 
@@ -136,13 +143,14 @@ Network Sentinel is being developed as the IT599 IT Specialist Capstone Project 
 - Docker project structure established
 - Suricata IDS deployed and operational
 - Initial documentation completed
-- Grafana security dashboard implemented
+- Grafana Security Overview dashboard implemented
+- Grafana System Health dashboard implemented
 - Loki log aggregation integrated
 - Security event visualizations created
 
 ### Current Focus
 
-- Enhancing the Grafana security dashboards
+- Alert configuration and testing
 - Developing the Network Sentinel web portal
 - Implementing AI-assisted alert explanations
 
@@ -150,5 +158,4 @@ Network Sentinel is being developed as the IT599 IT Specialist Capstone Project 
 
 - AI-powered alert analysis
 - One-command deployment script
-- Dashboard enhancements
 - Version 1.0 release
