@@ -71,3 +71,51 @@ The query `{job="suricata"}` successfully returned Suricata events containing se
 #### Result
 
 Network Sentinel now supports centralized security event collection and visualization. The next phase will focus on transforming raw IDS logs into security dashboards and actionable alert views.
+
+---
+
+---
+
+## 2026-07-28
+
+### Security Overview Dashboard Milestone
+
+Completed the initial Security Overview dashboard for Network Sentinel, providing a centralized view of network security events and activity.
+
+#### Accomplishments
+
+- Created the Security Events Timeline panel to visualize security activity over time.
+- Added an Alerts (24 Hours) panel to summarize detected security alerts.
+- Created the Security Event Summary panel to categorize network activity.
+- Added the Most Active Devices panel to identify systems generating the highest number of security events.
+- Redesigned the Recent Security Activity panel using user-friendly event names instead of raw Suricata alert signatures.
+- Implemented LogQL transformations to translate Suricata alert signatures into simplified Network Sentinel event descriptions.
+- Added risk level translation from Suricata severity values into user-friendly High, Medium, and Low risk classifications.
+- Added dashboard and panel descriptions to improve usability and documentation.
+- Updated project screenshots for GitHub and project documentation.
+
+#### Design Decision
+
+The Security Overview dashboard was designed to present security information in terminology that is understandable to small business administrators and advanced home users. Instead of displaying raw intrusion detection signatures, Network Sentinel translates security events into meaningful descriptions while preserving the underlying technical information for analysis. This approach aligns with the project's goal of making security monitoring more accessible to users without requiring advanced cybersecurity knowledge.
+
+#### Validation
+
+Successfully generated Suricata alerts using network scanning and verified that:
+
+- Promtail successfully collected new Suricata events.
+- Loki indexed the collected security events.
+- Grafana displayed live security events through LogQL queries.
+- User-friendly event names and risk levels were translated correctly.
+- Dashboard panels updated automatically as new security events were generated.
+- Event summaries and device activity reflected current network activity.
+
+#### Result
+
+Network Sentinel now provides a polished Security Overview dashboard that summarizes network activity, visualizes security trends, highlights the most active devices, and presents security alerts using clear, user-friendly terminology. This milestone establishes the foundation for the upcoming AI-assisted alert explanation feature, which will provide users with plain-language explanations and recommended actions for detected security events.
+
+#### Next Steps
+
+- Develop the AI-assisted alert explanation feature.
+- Continue refining dashboard visualizations and user experience.
+- Integrate AI-generated explanations into the Security Overview dashboard.
+- Begin completing the remaining capstone documentation and deployment guides.
