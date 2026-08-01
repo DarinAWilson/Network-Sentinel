@@ -11,9 +11,21 @@
 <div class="container">
 
 <header>
-    <img src="images/Network-Sentinel-Logo.png" alt="Network Sentinel Logo" class="logo">
-    <h1>Network Sentinel</h1>
-    <p>AI-Assisted Network Security Monitoring</p>
+
+    <a href="index.html" class="home-link">
+
+        <img src="images/Network-Sentinel-Logo.png"
+             alt="Network Sentinel Logo"
+             class="logo">
+
+        <h1>Network Sentinel</h1>
+
+    </a>
+
+    <p>
+        AI-Assisted Network Security Monitoring
+    </p>
+
 </header>
 
     <section class="card">
@@ -23,7 +35,7 @@
             collected by Suricata and visualized through Grafana.
         </p>
 
-        <a href="http://SERVER02-IP:3000" class="button">
+        <a href="http://YOUR_SERVER_IP:3002/d/ad7ngst/network-sentinel-security-overview?orgId=1" class="button" target="_blank">
             Open Security Dashboard
         </a>
     </section>
@@ -35,7 +47,7 @@
             Docker containers, and overall server health.
         </p>
 
-        <a href="http://SERVER02-IP:3000" class="button">
+        <a href="http://YOUR_SERVER_IP:3002/d/adjtzvj/network-sentinel-system-health?orgId=1" class="button" target="_blank">
             Open System Dashboard
         </a>
     </section>
@@ -47,20 +59,26 @@
             provided by Uptime Kuma.
         </p>
 
-        <a href="http://SERVER02-IP:3001" class="button">
+        <a href="http://YOUR_SERVER_IP:3001/dashboard/4" class="button" target="_blank">
             Open Uptime Kuma
         </a>
+
     </section>
 
     <section class="card">
-        <h2>AI Security Assistant</h2>
-        <p>
-            Explain security alerts in plain English and provide
-            guidance for investigation.
-        </p>
+    <h2>AI Security Assistant</h2>
 
-        <button disabled>Coming Soon</button>
-    </section>
+    <p>
+        Explain security alerts in plain English and receive
+        recommended investigation steps powered by Network Sentinel.
+    </p>
+
+    <a href="ai-assistant.html"
+       class="button">
+        Launch AI Assistant
+    </a>
+
+</section>
 
 </div>
 

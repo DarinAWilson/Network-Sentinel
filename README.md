@@ -42,7 +42,7 @@ AI-Assisted Network Security Monitoring for Small Business and Home Networks
 
 
 
-Network Sentinel is a Dockerized network security monitoring platform designed for small businesses and advanced home users. The platform combines monitoring, alerting, visualization, and AI-assisted explanations to help users understand security events and network activity.
+Network Sentinel is a Dockerized network security monitoring platform designed for small businesses and advanced home users. The platform combines network monitoring, intrusion detection, centralized log collection, dashboard visualization, and AI-assisted security explanations to help users better understand security events and network activity.
 
 
 ## Dashboard Previews
@@ -61,12 +61,27 @@ The System Health Dashboard provides administrators with a real-time view of the
 
 ![System Health Dashboard](Screenshots/SystemHealthDashboard.png)
 
+## AI Security Assistant
+
+The AI Security Assistant translates technical security events into plain-English explanations. Users can select a detected security event and receive an easy-to-understand description, an assigned risk level, an explanation of why the event matters, and recommended investigation steps.
+
+![Network Sentinel AI Assistant](Screenshots/AI-Security-Assistant.png)
+
 
 ## About
 
 Network Sentinel is being developed as the IT599 IT Specialist Capstone Project for the Master of Science in Information Technology (Cybersecurity concentration) at Purdue Global University.
 
+## Features
 
+- Real-time network security monitoring
+- Suricata intrusion detection
+- Grafana security dashboards
+- Prometheus system monitoring
+- Loki centralized log collection
+- AI-assisted security explanations
+- Interactive monitoring portal
+- Dockerized deployment
 
 ## Technology Stack
 
@@ -80,14 +95,17 @@ Network Sentinel is being developed as the IT599 IT Specialist Capstone Project 
 - Grafana
 - Prometheus
 - Loki
+- Promtail
 - Uptime Kuma
 - Portainer
 
 
 
-### Planned Technologies
+### Current Features
 
-- AI-assisted alert explanation component
+- AI Security Assistant
+- Interactive monitoring portal
+- User-friendly security event translation
 
 
 
@@ -142,20 +160,25 @@ Network Sentinel is being developed as the IT599 IT Specialist Capstone Project 
 - GitHub repository created
 - Docker project structure established
 - Suricata IDS deployed and operational
-- Initial documentation completed
+- Prometheus monitoring stack configured
+- Loki and Promtail log aggregation integrated
 - Grafana Security Overview dashboard implemented
 - Grafana System Health dashboard implemented
-- Loki log aggregation integrated
-- Security event visualizations created
+- Interactive Network Sentinel web portal created
+- AI Security Assistant prototype implemented
+- Security event translation using LogQL
+- Professional project documentation completed
 
 ### Current Focus
 
-- Alert configuration and testing
-- Developing the Network Sentinel web portal
-- Implementing AI-assisted alert explanations
+- Integrating live security events with the AI Security Assistant
+- Final testing and validation
+- Final project documentation
+- Presentation preparation
 
 ### Planned
 
-- AI-powered alert analysis
-- One-command deployment script
+- Live AI analysis of security events
+- One-command Docker deployment
+- Additional security dashboards
 - Version 1.0 release

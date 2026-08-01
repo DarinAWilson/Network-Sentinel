@@ -81,3 +81,116 @@ button:disabled {
     display: block;
     margin: 0 auto 20px auto;
 }
+
+/* =======================================================
+   AI Security Assistant Styling
+   ======================================================= */
+
+select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+
+    background: #0f172a;
+    color: #f8fafc;
+
+    border: 1px solid #334155;
+    border-radius: 8px;
+
+    font-size: 1rem;
+}
+
+select:focus {
+    outline: none;
+    border-color: #38bdf8;
+}
+
+#aiOutput {
+    background: #0f172a;
+    border-left: 5px solid #38bdf8;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+
+    animation: fadeIn .35s ease-in-out;
+}
+
+#aiOutput h3 {
+    color: #38bdf8;
+    margin-bottom: 15px;
+}
+
+#aiOutput h4 {
+    color: #38bdf8;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+#aiOutput p {
+    margin-bottom: 15px;
+    line-height: 1.7;
+}
+
+#aiOutput ul {
+    margin-left: 20px;
+    margin-bottom: 15px;
+}
+
+#aiOutput li {
+    margin-bottom: 8px;
+}
+
+#aiOutput hr {
+    border: none;
+    border-top: 1px solid #334155;
+    margin: 25px 0;
+}
+
+#copyButton {
+    margin-top: 20px;
+}
+
+.button,
+button {
+    font-weight: 600;
+}
+
+.button:hover,
+button:hover:not(:disabled) {
+    background: #0284c7;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(14,165,233,.35);
+}
+
+@keyframes fadeIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+.logo {
+    transition: transform 0.2s ease;
+}
+
+.logo:hover {
+    transform: scale(1.05);
+}
+
+.home-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.home-link {
+    text-decoration: none;
+    color: inherit;
+}
