@@ -6,4 +6,11 @@ services:
     ports:
       - "5000:5000"
 
+    networks:
+      - network-sentinel
+
     restart: unless-stopped
+
+networks:
+  network-sentinel:
+    external: true
