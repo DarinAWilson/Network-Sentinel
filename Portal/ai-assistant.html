@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,30 +33,26 @@
 
 <section class="card">
 
-    <h2>Analyze Security Event</h2>
+    <h2>Analyze Latest Security Event</h2>
 
     <p>
-        Select a detected security event and let Network Sentinel AI explain
-        what happened, why it matters, and what actions you should consider.
+        Network Sentinel automatically retrieves the most recent security
+        event detected on your network. Click
+        <strong>Analyze with AI</strong> to receive an explanation and
+        recommended actions.
     </p>
 
-    <select id="eventSelect">
+    <div id="latestAlert" class="alert-preview">
 
-        <option>Network Scan Detected</option>
-        <option>Malformed HTTP Request</option>
-        <option>HTTP Communication Error</option>
-        <option>Protocol Communication Issue</option>
-        <option>DNS Activity</option>
-        <option>SSH Activity</option>
-        <option>SMB Activity</option>
+        <p><strong>Loading latest security event...</strong></p>
 
-    </select>
+    </div>
 
-    <br><br>
+    <br>
 
     <button id="explainButton" class="button">
 
-        🤖 Analyze with AI
+        🤖 Analyze Latest Alert
 
     </button>
 
@@ -68,8 +65,9 @@
     <div id="aiOutput">
 
         <p>
-            Select a security event above and click
-            <strong>Analyze with AI</strong>.
+            Click
+            <strong>Analyze Latest Alert</strong>
+            to generate an explanation.
         </p>
 
     </div>
@@ -89,11 +87,12 @@
     <h2>About the AI Security Assistant</h2>
 
     <p>
-        The AI Security Assistant translates technical network security events
-        into clear, easy-to-understand explanations. It helps users understand
-        detected activity, assess potential risk, and identify recommended
-        investigation steps. This feature is designed to assist administrators
-        and should complement, not replace, professional security analysis.
+        The AI Security Assistant translates technical network security
+        events into clear, easy-to-understand explanations. It helps users
+        understand detected activity, assess potential risk, and identify
+        recommended investigation steps. This feature is designed to assist
+        administrators and should complement, not replace, professional
+        security analysis.
     </p>
 
 </section>

@@ -1,3 +1,32 @@
+// Stores the latest alert returned from the backend
+let latestAlert = null;
+
+// Retrieve the latest alert when the page loads
+fetch("http://YOUR_SERVER_IP:5000/api/latest-alert")
+    .then(response => response.json())
+    .then(data => {
+
+        latestAlert = data;
+
+        document.getElementById("latestAlert").innerHTML = `
+            <h3>🔎 ${data.title}</h3>
+
+            <p><strong>Risk:</strong> ${data.risk}</p>
+
+            <p><strong>Source:</strong> ${data.source}</p>
+
+            <p><strong>Target:</strong> ${data.target}</p>
+        `;
+    })
+    .catch(error => {
+
+        console.error(error);
+
+        document.getElementById("latestAlert").innerHTML = `
+            <p><strong>Unable to retrieve the latest security event.</strong></p>
+        `;
+    });
+
 document.getElementById("explainButton").addEventListener("click", function () {
 
     const event = document.getElementById("eventSelect").value;
