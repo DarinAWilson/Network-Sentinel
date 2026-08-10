@@ -25,3 +25,8 @@ __pycache__/
 
 # macOS
 .DS_Store
+
+# Purdue submission folders
+Documents/Final Deliverables/
+Documents/Main Documents/
+Documents/Updates/
