@@ -162,3 +162,147 @@ Successfully verified that:
 - Integrate live security events from Grafana/Loki into the AI Security Assistant.
 - Allow users to analyze actual detected security alerts instead of selecting predefined events.
 - Complete final testing and demonstration materials.
+
+## 2026-08-10
+
+### Live Security Alert Integration and Backend Analysis Milestone
+
+Completed the integration of live Suricata security alerts into the Network Sentinel AI Security Assistant. The portal can now retrieve actual security events from Loki through the Flask backend and provide plain-English security analysis and recommended actions.
+
+#### Accomplishments
+
+- Added the Python `requests` library to support communication between the Flask backend and Loki.
+- Replaced placeholder alert data in the AI backend with live queries to the Loki HTTP API.
+- Implemented Loki `query_range` requests to retrieve the most recent Suricata security alert.
+- Configured the AI backend to communicate with Loki through the existing `network-sentinel` Docker network.
+- Parsed live Suricata alert data including:
+  - Alert signature
+  - Severity and risk level
+  - Source IP address
+  - Destination IP address
+- Added the `/api/analyze-latest` Flask endpoint for analyzing the latest detected security event.
+- Expanded the security explanation engine to provide:
+  - Plain-English security analysis
+  - Risk information
+  - Explanation of why the event matters
+  - Recommended investigation actions
+- Updated the AI Assistant interface to retrieve and display live security alerts.
+- Connected the **Analyze Latest Alert** button to the backend analysis API.
+- Maintained the **Copy Explanation** feature for sharing or documenting analysis results.
+- Sanitized the public GitHub configuration by replacing the internal Server02 address with a `YOUR_SERVER_IP` placeholder.
+
+#### Design Decisions
+
+The final capstone prototype uses a rule-based security explanation engine rather than relying on an external generative AI service. This approach provides consistent and reliable security explanations while avoiding external API dependencies during the final demonstration. The Flask backend and modular `ai_engine.py` design allow a generative AI service or local language model to replace or extend the current explanation engine in a future version.
+
+The AI backend was also connected to Loki through the dedicated `network-sentinel` Docker network rather than communicating through a hardcoded host address. This keeps internal container communication isolated and makes the Docker architecture more portable and reproducible.
+
+#### Troubleshooting and Validation
+
+During integration, the AI backend initially could not resolve the Loki hostname because the containers were running on separate Docker networks. The issue was identified through Flask container logs and resolved by attaching the AI backend to the existing `network-sentinel` Docker network.
+
+Successfully verified that:
+
+- Loki returns live Suricata security events through its API.
+- The Flask backend retrieves the latest real Suricata alert.
+- Suricata severity values are translated into user-friendly risk levels.
+- The `/api/latest-alert` endpoint returns live alert information.
+- The `/api/analyze-latest` endpoint returns a structured security explanation.
+- The Network Sentinel portal displays the latest real security alert.
+- **Analyze Latest Alert** provides analysis and recommended actions for the live event.
+- The frontend communicates successfully with the Flask backend.
+- GitHub contains a sanitized server configuration rather than the private Server02 IP address.
+
+#### Next Steps
+
+- Perform final end-to-end functional testing.
+- Verify multiple Suricata alert types and security explanations.
+- Verify the **Copy Explanation** feature.
+- Capture final screenshots and demonstration evidence.
+- Complete administrator handoff documentation.
+- Prepare the final stakeholder presentation and audio transcript.
+
+## 2026-08-12
+
+### Final Integration Testing and Suricata Logging Repair
+
+Performed final end-to-end testing of the Network Sentinel monitoring and AI Security Assistant pipeline in preparation for the final stakeholder presentation.
+
+#### Final Testing
+
+Verified the operation of the Network Sentinel security monitoring pipeline:
+
+- Confirmed all major Docker containers were running successfully.
+- Verified Suricata was actively monitoring the Server02 network interface.
+- Verified the Flask AI backend remained operational after extended runtime.
+- Tested the `/api/latest-alert` endpoint.
+- Tested the `/api/analyze-latest` endpoint.
+- Verified live Suricata security events could be retrieved through Loki.
+- Verified the AI Security Assistant displayed current security events.
+- Verified the AI explanation engine generated:
+  - Security analysis
+  - Risk level
+  - Source and destination information
+  - Explanation of why the event matters
+  - Recommended investigation actions
+  - Network Sentinel recommendation
+- Verified the Copy Explanation feature successfully copied generated security analysis.
+
+#### Issue Identified During Testing
+
+Final testing identified a broken Suricata logging path caused by an older Suricata deployment referencing the previous lowercase `network-sentinel` directory.
+
+The running Suricata and Promtail containers were configured to use:
+
+`/home/daw/network-sentinel/suricata/logs`
+
+The active project repository is located at:
+
+`/home/daw/Network-Sentinel`
+
+Because the old directory had been removed during project cleanup, Suricata could no longer provide new log data to Promtail. Previously collected alerts remained available in Loki, but new alerts were no longer entering the monitoring pipeline.
+
+#### Resolution
+
+Reconstructed the Suricata deployment inside the active Network Sentinel project using the configuration recovered from the existing Docker container.
+
+Created a permanent Suricata deployment under:
+
+`Network-Sentinel/Docker/suricata/`
+
+The reconstructed deployment retained:
+
+- Suricata 7.0
+- Host network mode
+- Monitoring of the `wlp2s0` network interface
+- Required Linux networking capabilities
+- Persistent configuration and log directories
+- Automatic container restart policy
+
+Updated the Promtail Docker configuration to read Suricata logs from the new permanent location.
+
+Successfully verified that Promtail detected and began monitoring the new `eve.json` file.
+
+#### End-to-End Validation
+
+After completing the repair, Network Sentinel successfully detected and processed new live security events.
+
+The validated data flow was:
+
+`Network Traffic → Suricata → eve.json → Promtail → Loki → Flask API → AI Security Assistant`
+
+A new Suricata HTTP security event was successfully displayed by the Network Sentinel portal and processed by the AI explanation engine.
+
+This confirmed that the complete monitoring and security analysis pipeline was operational following the final configuration repair.
+
+#### Final Status
+
+The core Network Sentinel prototype is functionally complete and ready for final presentation preparation.
+
+Remaining project activities include:
+
+- Final dashboard and navigation verification
+- Capture final presentation screenshots
+- Complete administrator documentation
+- Prepare the stakeholder PowerPoint presentation
+- Prepare and record the presentation transcript and narration
