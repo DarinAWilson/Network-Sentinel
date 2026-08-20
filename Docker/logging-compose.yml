@@ -34,9 +34,35 @@ services:
     networks:
       - network-sentinel
 
+  alloy:
+    image: grafana/alloy:latest
+    container_name: alloy
+    restart: unless-stopped
+
+    command:
+      - run
+      - --server.http.listen-addr=0.0.0.0:12345
+      - --storage.path=/var/lib/alloy/data
+      - /etc/alloy/config.alloy
+
+    ports:
+      - "12345:12345"
+
+    volumes:
+      - ./configs/alloy/config.alloy:/etc/alloy/config.alloy:ro
+      - /home/daw/Network-Sentinel/Docker/suricata/logs:/var/log/suricata:ro
+      - alloy-data:/var/lib/alloy/data
+
+    networks:
+      - network-sentinel
+
+    depends_on:
+      - loki
+
 volumes:
   loki-data:
   promtail-data:
+  alloy-data:
 
 networks:
   network-sentinel:
