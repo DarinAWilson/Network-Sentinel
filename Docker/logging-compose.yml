@@ -26,7 +26,7 @@ services:
     volumes:
       - ./configs/promtail:/etc/promtail
       - /home/daw/Network-Sentinel/Docker/suricata/logs:/var/log/suricata:ro
-      - promtail-data:/var/lib/promtai
+      - promtail-data:/var/lib/promtail
 
     depends_on:
       - loki
