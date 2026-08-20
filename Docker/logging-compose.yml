@@ -30,6 +30,9 @@ services:
     depends_on:
       - loki
 
+    networks:
+      - network-sentinel
+
 volumes:
   loki-data:
 
