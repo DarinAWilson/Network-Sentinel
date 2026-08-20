@@ -15,25 +15,7 @@ services:
 
     networks:
       - network-sentinel
-
-  promtail:
-    image: grafana/promtail:2.9.8
-    container_name: promtail
-    restart: unless-stopped
-
-    command: -config.file=/etc/promtail/config.yml
-
-    volumes:
-      - ./configs/promtail:/etc/promtail
-      - /home/daw/Network-Sentinel/Docker/suricata/logs:/var/log/suricata:ro
-      - promtail-data:/var/lib/promtail
-
-    depends_on:
-      - loki
-
-    networks:
-      - network-sentinel
-
+      
   alloy:
     image: grafana/alloy:latest
     container_name: alloy
@@ -61,7 +43,6 @@ services:
 
 volumes:
   loki-data:
-  promtail-data:
   alloy-data:
 
 networks:
