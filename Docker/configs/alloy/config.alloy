@@ -9,7 +9,8 @@ loki.source.file "suricata" {
     },
   ]
 
-  forward_to = [loki.write.local.receiver]
+  forward_to    = [loki.write.local.receiver]
+  tail_from_end = true
 }
 
 loki.write "local" {
