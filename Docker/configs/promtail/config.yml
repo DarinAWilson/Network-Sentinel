@@ -18,4 +18,6 @@ scrape_configs:
         labels:
           job: suricata
           host: server02
+          tenant_id: NS-C001
+          node_id: NS-C001-01
           __path__: /var/log/suricata/eve.json
