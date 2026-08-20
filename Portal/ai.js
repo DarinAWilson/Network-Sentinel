@@ -2,8 +2,8 @@
 let latestAlert = null;
 
 // Network Sentinel AI Backend
-// Replace YOUR_SERVER_IP with the IP address of the Network Sentinel server.
-const API_BASE_URL = "http://YOUR_SERVER_IP:5000";
+// Replace SERVER_IP with the IP address of the Network Sentinel server.
+const API_BASE_URL = "http://SERVER_IP:5000";
 
 
 // Retrieve the latest alert when the page loads

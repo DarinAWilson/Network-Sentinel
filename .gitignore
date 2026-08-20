@@ -34,3 +34,6 @@ Documents/Updates/
 # Suricata generated configuration and live security logs
 Docker/suricata/config/
 Docker/suricata/logs/
+
+# Network Sentinel commercial development
+Commercial/

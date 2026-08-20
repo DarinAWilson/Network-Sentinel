@@ -32,18 +32,19 @@
                                                            
 ```
 
-\# Network Sentinel
+# Network Sentinel
 
-AI-Assisted Network Security Monitoring for Small Business and Home Networks
+**AI-Assisted Network Security Monitoring for Small Business and Home Networks**
 
+## Project Overview
 
+Network Sentinel is a Dockerized network security monitoring platform originally developed as the IT599 IT Specialist Capstone Project for the Master of Science in Information Technology, Cybersecurity concentration, at Purdue Global.
 
-\## Project Overview
+The platform combines network monitoring, intrusion detection, centralized log collection, dashboard visualization, system health monitoring, and AI-assisted security explanations to help users better understand security events and network activity.
 
+The graduate capstone implementation was successfully completed in August 2026. Continued post-capstone development is focused on improving the platform, deployment process, security architecture, and long-term real-world usability.
 
-
-Network Sentinel is a Dockerized network security monitoring platform designed for small businesses and advanced home users. The platform combines network monitoring, intrusion detection, centralized log collection, dashboard visualization, and AI-assisted security explanations to help users better understand security events and network activity.
-
+---
 
 ## Dashboard Previews
 
@@ -55,130 +56,198 @@ The Security Overview Dashboard displays live security events collected by Suric
 
 ![Network Sentinel Security Dashboard](Screenshots/Dashboardv2_Redacted.png)
 
-## System Health Dashboard
+### System Health Dashboard
 
 The System Health Dashboard provides administrators with a real-time view of the monitoring platform. It displays CPU utilization, memory utilization, system uptime, historical performance trends, and network throughput to help verify that Network Sentinel is operating reliably.
 
 ![System Health Dashboard](Screenshots/SystemHealthDashboard.png)
 
-## AI Security Assistant
+### AI Security Assistant
 
 The AI Security Assistant translates technical security events into plain-English explanations. Users can select a detected security event and receive an easy-to-understand description, an assigned risk level, an explanation of why the event matters, and recommended investigation steps.
 
 ![Network Sentinel AI Assistant](Screenshots/AI-Security-Assistant.png)
 
-
-## About
-
-Network Sentinel is being developed as the IT599 IT Specialist Capstone Project for the Master of Science in Information Technology (Cybersecurity concentration) at Purdue Global University.
+---
 
 ## Features
 
-- Real-time network security monitoring
-- Suricata intrusion detection
-- Grafana security dashboards
-- Prometheus system monitoring
-- Loki centralized log collection
-- AI-assisted security explanations
-- Interactive monitoring portal
-- Dockerized deployment
+* Real-time network security monitoring
+* Suricata intrusion detection
+* Grafana security dashboards
+* Prometheus system monitoring
+* Loki centralized log collection
+* Promtail log forwarding
+* AI-assisted security explanations
+* Interactive monitoring portal
+* Dockerized deployment
+* System and service health monitoring
+* Centralized security event analysis
+
+---
 
 ## Technology Stack
 
+### Platform
 
+* Ubuntu Server
+* Docker
+* Portainer
 
-### Current Environment
+### Security Monitoring
 
-- Ubuntu Server
-- Docker
-- Suricata IDS
-- Grafana
-- Prometheus
-- Loki
-- Promtail
-- Uptime Kuma
-- Portainer
+* Suricata IDS
 
+### Observability
 
+* Grafana
+* Prometheus
+* Loki
+* Promtail
+* Uptime Kuma
+* Node Exporter
+* cAdvisor
 
-### Current Features
+### Application Components
 
-- AI Security Assistant
-- Interactive monitoring portal
-- User-friendly security event translation
+* Flask API
+* HTML
+* CSS
+* JavaScript
+* AI-assisted security analysis
 
+---
 
+## Architecture
 
-\## Project Goals
+Network Sentinel uses a containerized architecture that separates network monitoring, log collection, system monitoring, visualization, and application services.
 
+At a high level:
 
+```text
+Network Traffic
+      |
+      v
+ Suricata IDS
+      |
+      v
+   Promtail
+      |
+      v
+     Loki
+      |
+      +-------------------+
+      |                   |
+      v                   v
+   Grafana        Network Sentinel API
+                          |
+                          v
+                  AI Security Assistant
+                          |
+                          v
+                  Web Monitoring Portal
+```
 
-\* Monitor network and system activity
+Prometheus, Node Exporter, and cAdvisor provide system and container health metrics, while Uptime Kuma provides service availability monitoring.
 
-\* Detect suspicious behavior
+---
 
-\* Visualize metrics and alerts
+## Project Goals
 
-\* Provide AI-assisted alert explanations
+The original capstone project was designed to:
 
-\* Demonstrate cybersecurity and networking skills
+* Monitor network and system activity
+* Detect suspicious network behavior
+* Visualize security events and system metrics
+* Provide AI-assisted security alert explanations
+* Demonstrate networking knowledge
+* Demonstrate cybersecurity knowledge
+* Demonstrate Linux administration skills
+* Demonstrate Docker containerization
+* Demonstrate monitoring and observability concepts
+* Demonstrate security event analysis
+* Produce professional technical documentation
 
-\* Demonstrate Linux administration skills
+---
 
-\* Demonstrate Docker containerization skills
+## Intended Audience
 
-\* Produce professional technical documentation
+### Primary
 
+* Small business IT administrators
+* Small organizations without dedicated cybersecurity personnel
 
-
-\## Intended Audience
-
-
-
-\### Primary Stakeholders
-
-
-
-\* Small business IT administrators
-
-\* Small organizations without dedicated cybersecurity staff
-
-
-
-### Secondary Stakeholders
+### Secondary
 
 * Homelab enthusiasts
-* Home users
+* Advanced home users
 * Remote workers
 
-## Project Status
+---
 
-🚧 Active Development
+## Capstone Status
 
-### Completed
+**✅ Graduate Capstone Completed — August 2026**
 
-- GitHub repository created
-- Docker project structure established
-- Suricata IDS deployed and operational
-- Prometheus monitoring stack configured
-- Loki and Promtail log aggregation integrated
-- Grafana Security Overview dashboard implemented
-- Grafana System Health dashboard implemented
-- Interactive Network Sentinel web portal created
-- AI Security Assistant prototype implemented
-- Security event translation using LogQL
-- Professional project documentation completed
+The original Network Sentinel capstone implementation included:
 
-### Current Focus
+* Dockerized project architecture
+* Suricata IDS deployment
+* Prometheus monitoring stack
+* Loki and Promtail centralized logging
+* Grafana Security Overview dashboard
+* Grafana System Health dashboard
+* Node Exporter and cAdvisor monitoring
+* Uptime Kuma service monitoring
+* Interactive Network Sentinel web portal
+* Flask-based backend API
+* AI Security Assistant prototype
+* Live Suricata security event retrieval
+* AI-assisted security event analysis
+* Professional deployment documentation
+* Testing documentation
+* Architecture documentation
+* Administrator instructions
+* Final project report and presentation
 
-- Integrating live security events with the AI Security Assistant
-- Final testing and validation
-- Final project documentation
-- Presentation preparation
+---
 
-### Planned
+## Post-Capstone Development
 
-- Live AI analysis of security events
-- One-command Docker deployment
-- Additional security dashboards
-- Version 1.0 release
+Network Sentinel continues as a personal cybersecurity and software development project beyond the completed graduate capstone.
+
+Future development areas may include:
+
+* Improved deployment automation
+* Secure remote telemetry
+* Multi-environment monitoring
+* Improved authentication and access control
+* Customer-friendly security reporting
+* Enhanced alert processing
+* Additional security dashboards
+* Improved AI-assisted event analysis
+* Deployment and configuration hardening
+
+The completed capstone remains the technical foundation for future versions of Network Sentinel.
+
+---
+
+## Project Scope
+
+Network Sentinel is an educational and prototype security monitoring platform.
+
+It is not currently intended to replace:
+
+* Enterprise SIEM platforms
+* Endpoint Detection and Response systems
+* Managed Detection and Response providers
+* Professional incident response services
+* Full Managed Service Provider environments
+
+Network Sentinel does not guarantee the prevention or detection of every cybersecurity threat.
+
+---
+
+## Repository
+
+This repository contains the source code, configuration, technical documentation, screenshots, and development artifacts associated with the Network Sentinel project.
