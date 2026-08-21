@@ -20,6 +20,7 @@ services:
 
     volumes:
       - ./configs/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./secrets/nginx:/etc/nginx/secrets:ro
 
     networks:
       - network-sentinel
@@ -45,6 +46,7 @@ services:
       - ./configs/alloy/config.alloy:/etc/alloy/config.alloy:ro
       - /home/daw/Network-Sentinel/Docker/suricata/logs:/var/log/suricata:ro
       - alloy-data:/var/lib/alloy/data
+      - ./secrets/alloy:/run/secrets:ro
 
     networks:
       - network-sentinel

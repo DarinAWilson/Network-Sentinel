@@ -37,3 +37,6 @@ Docker/suricata/logs/
 
 # Network Sentinel commercial development
 Commercial/
+
+# Network Sentinel runtime secrets
+Docker/secrets/

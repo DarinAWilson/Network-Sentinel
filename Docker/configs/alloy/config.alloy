@@ -15,6 +15,7 @@ loki.source.file "suricata" {
 
 loki.write "local" {
   endpoint {
-    url = "http://telemetry-gateway:8080/loki/api/v1/push"
+    url               = "http://telemetry-gateway:8080/loki/api/v1/push"
+    bearer_token_file = "/run/secrets/telemetry-token"
   }
 }
