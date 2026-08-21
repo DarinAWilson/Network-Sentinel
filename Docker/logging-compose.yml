@@ -12,7 +12,21 @@ services:
 
     networks:
       - network-sentinel
-      
+
+  telemetry-gateway:
+    image: nginx:alpine
+    container_name: telemetry-gateway
+    restart: unless-stopped
+
+    volumes:
+      - ./configs/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+
+    networks:
+      - network-sentinel
+
+    depends_on:
+      - loki
+
   alloy:
     image: grafana/alloy:latest
     container_name: alloy
