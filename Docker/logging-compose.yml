@@ -4,9 +4,6 @@ services:
     container_name: loki
     restart: unless-stopped
 
-    ports:
-      - "3100:3100"
-
     command: -config.file=/etc/loki/local-config.yaml
 
     volumes:
