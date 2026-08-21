@@ -15,6 +15,7 @@ loki.source.file "suricata" {
 
 loki.write "local" {
   endpoint {
-    url = "http://loki:3100/loki/api/v1/push"
+    url       = "http://loki:3100/loki/api/v1/push"
+    tenant_id = "NS-C001"
   }
 }
