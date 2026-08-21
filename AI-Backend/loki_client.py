@@ -1,9 +1,11 @@
 import json
+import os
 import time
 import requests
 
 
 LOKI_URL = "http://loki:3100"
+LOKI_TENANT_ID = os.getenv("LOKI_TENANT_ID", "NS-C001")
 
 
 def get_latest_alert():
@@ -29,6 +31,9 @@ def get_latest_alert():
     response = requests.get(
         f"{LOKI_URL}/loki/api/v1/query_range",
         params=params,
+        headers={
+            "X-Scope-OrgID": LOKI_TENANT_ID
+        },
         timeout=10
     )
 
