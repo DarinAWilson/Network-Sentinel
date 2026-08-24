@@ -3,9 +3,9 @@ loki.source.file "suricata" {
     {
       __path__  = "/var/log/suricata/eve.json",
       job       = "suricata",
-      host      = env("NS_HOST"),
-      tenant_id = env("NS_TENANT_ID"),
-      node_id   = env("NS_NODE_ID"),
+      host      = sys.env("NS_HOST"),
+      tenant_id = sys.env("NS_TENANT_ID"),
+      node_id   = sys.env("NS_NODE_ID"),
     },
   ]
 
@@ -15,7 +15,7 @@ loki.source.file "suricata" {
 
 loki.write "local" {
   endpoint {
-    url               = env("NS_TELEMETRY_URL")
+    url               = sys.env("NS_TELEMETRY_URL")
     bearer_token_file = "/run/secrets/telemetry-token"
 
     tls_config {
