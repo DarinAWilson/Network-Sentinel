@@ -1,0 +1,25 @@
+loki.source.file "suricata" {
+  targets = [
+    {
+      __path__  = "/var/log/suricata/eve.json",
+      job       = "suricata",
+      host      = sys.env("NS_HOST"),
+      tenant_id = sys.env("NS_TENANT_ID"),
+      node_id   = sys.env("NS_NODE_ID"),
+    },
+  ]
+
+  forward_to    = [loki.write.remote.receiver]
+  tail_from_end = true
+}
+
+loki.write "remote" {
+  endpoint {
+    url               = sys.env("NS_TELEMETRY_URL")
+    bearer_token_file = "/run/secrets/telemetry-token"
+
+    tls_config {
+      ca_file = "/etc/alloy/telemetry.crt"
+    }
+  }
+}

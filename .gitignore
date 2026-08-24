@@ -40,3 +40,8 @@ Commercial/
 
 # Network Sentinel runtime secrets
 Docker/secrets/
+
+# Sentinel Node runtime data
+Sentinel-Node/.env
+Sentinel-Node/secrets/
+Sentinel-Node/logs/

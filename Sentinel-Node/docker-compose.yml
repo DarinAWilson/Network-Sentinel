@@ -1,0 +1,53 @@
+services:
+  suricata:
+    image: jasonish/suricata:7.0
+    container_name: sentinel-suricata
+    restart: unless-stopped
+
+    network_mode: host
+
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+      - SYS_NICE
+
+    volumes:
+      - ./configs/suricata:/etc/suricata
+      - ./logs:/var/log/suricata
+      - suricata-data:/var/lib/suricata
+      - suricata-run:/var/run/suricata
+
+    command:
+      - -i
+      - ${NS_INTERFACE}
+
+  alloy:
+    image: grafana/alloy:latest
+    container_name: sentinel-alloy
+    restart: unless-stopped
+
+    environment:
+      NS_HOST: ${NS_HOST}
+      NS_TENANT_ID: ${NS_TENANT_ID}
+      NS_NODE_ID: ${NS_NODE_ID}
+      NS_TELEMETRY_URL: ${NS_TELEMETRY_URL}
+
+    command:
+      - run
+      - --storage.path=/var/lib/alloy/data
+      - /etc/alloy/config.alloy
+
+    volumes:
+      - ./configs/alloy/config.alloy:/etc/alloy/config.alloy:ro
+      - ./logs:/var/log/suricata:ro
+      - ./secrets/alloy:/run/secrets:ro
+      - ./secrets/tls/telemetry.crt:/etc/alloy/telemetry.crt:ro
+      - alloy-data:/var/lib/alloy/data
+
+    depends_on:
+      - suricata
+
+volumes:
+  alloy-data:
+  suricata-data:
+  suricata-run:
