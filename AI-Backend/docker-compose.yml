@@ -9,6 +9,9 @@ services:
     networks:
       - network-sentinel
 
+    environment:
+      LOKI_TENANT_ID: ${LOKI_TENANT_ID}
+
     restart: unless-stopped
 
 networks:

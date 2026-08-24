@@ -5,7 +5,10 @@ import requests
 
 
 LOKI_URL = "http://loki:3100"
-LOKI_TENANT_ID = os.getenv("LOKI_TENANT_ID", "NS-C001")
+LOKI_TENANT_ID = os.getenv("LOKI_TENANT_ID")
+
+if not LOKI_TENANT_ID:
+    raise RuntimeError("LOKI_TENANT_ID environment variable is required")
 
 
 def get_latest_alert():
