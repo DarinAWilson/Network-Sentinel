@@ -38,11 +38,7 @@ services:
       NS_TENANT_ID: ${NS_TENANT_ID}
       NS_NODE_ID: ${NS_NODE_ID}
       NS_TELEMETRY_URL: ${NS_TELEMETRY_URL}
-      NS_HOST: ${NS_HOST}
-      NS_TENANT_ID: ${NS_TENANT_ID}
-      NS_NODE_ID: ${NS_NODE_ID}
-      NS_TELEMETRY_URL: ${NS_TELEMETRY_URL}
-
+      
     command:
       - run
       - --server.http.listen-addr=0.0.0.0:12345
