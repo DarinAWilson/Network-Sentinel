@@ -47,6 +47,7 @@ services:
       - /home/daw/Network-Sentinel/Docker/suricata/logs:/var/log/suricata:ro
       - alloy-data:/var/lib/alloy/data
       - ./secrets/alloy:/run/secrets:ro
+      - ./secrets/nginx/tls/telemetry.crt:/run/secrets/telemetry.crt:ro
 
     networks:
       - network-sentinel
