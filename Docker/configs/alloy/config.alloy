@@ -19,7 +19,7 @@ loki.write "local" {
     bearer_token_file = "/run/secrets/telemetry-token"
 
     tls_config {
-      ca_file = "/run/secrets/telemetry.crt"
+  ca_file = "/etc/alloy/telemetry.crt"
     }
   }
 }
