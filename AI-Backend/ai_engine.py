@@ -2,6 +2,7 @@ import json
 import os
 
 from openai import OpenAI
+from ai_cache import get_cached_explanation, save_explanation
 
 
 client = OpenAI()
@@ -43,6 +44,8 @@ def generate_explanation(alert, force=False):
     """
     Analyze a Network Sentinel alert with OpenAI and return
     a structured plain-English security explanation.
+
+    Reuses cached generic explanations when available.
     """
 
     title = alert.get("title", "Unknown Security Event")
@@ -68,7 +71,23 @@ def generate_explanation(alert, force=False):
                 "Review the alert if the activity is unexpected.",
                 "Monitor for repeated or higher-risk related events."
             ],
-            "ai_analyzed": False
+            "ai_analyzed": False,
+            "cache_hit": False
+        }
+
+    cached = get_cached_explanation(alert)
+
+    if cached:
+        return {
+            "title": title,
+            "risk": risk,
+            "source": source,
+            "target": target,
+            "analysis": cached["analysis"],
+            "why_it_matters": cached["why_it_matters"],
+            "recommended_actions": cached["recommended_actions"],
+            "ai_analyzed": True,
+            "cache_hit": True
         }
 
     prompt = f"""
@@ -113,12 +132,11 @@ Rules:
 
         ai_result = json.loads(response.output_text)
 
-        return {
-            "title": title,
-            "risk": risk,
-            "source": source,
-            "target": target,
-            "analysis": ai_result.get("analysis", "No analysis returned."),
+        reusable_explanation = {
+            "analysis": ai_result.get(
+                "analysis",
+                "No analysis returned."
+            ),
             "why_it_matters": ai_result.get(
                 "why_it_matters",
                 "No additional context returned."
@@ -126,8 +144,25 @@ Rules:
             "recommended_actions": ai_result.get(
                 "recommended_actions",
                 []
-            ),
-            "ai_analyzed": True
+            )
+        }
+
+        save_explanation(
+            alert,
+            reusable_explanation,
+            MODEL
+        )
+
+        return {
+            "title": title,
+            "risk": risk,
+            "source": source,
+            "target": target,
+            "analysis": reusable_explanation["analysis"],
+            "why_it_matters": reusable_explanation["why_it_matters"],
+            "recommended_actions": reusable_explanation["recommended_actions"],
+            "ai_analyzed": True,
+            "cache_hit": False
         }
 
     except Exception as exc:
@@ -146,5 +181,6 @@ Rules:
                 "Try the AI analysis again later."
             ],
             "ai_analyzed": False,
+            "cache_hit": False,
             "ai_error": str(exc)
         }

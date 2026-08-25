@@ -14,8 +14,14 @@ services:
       OPENAI_API_KEY: ${OPENAI_API_KEY}
       OPENAI_MODEL: ${OPENAI_MODEL}
 
+    volumes:
+      - ai-cache-data:/app/data
+
     restart: unless-stopped
 
 networks:
   network-sentinel:
     external: true
+
+volumes:
+  ai-cache-data:
