@@ -1,15 +1,48 @@
-"""
-Network Sentinel AI Security Assistant
+import json
+import os
 
-Provides plain-English explanations and recommended actions
-for security alerts collected by Network Sentinel.
-"""
+from openai import OpenAI
 
 
-def generate_explanation(alert):
+client = OpenAI()
+
+MODEL = os.getenv("OPENAI_MODEL")
+
+if not MODEL:
+    raise RuntimeError("OPENAI_MODEL environment variable is required")
+
+
+def should_analyze_alert(alert):
     """
-    Analyze a Network Sentinel alert and return a structured
-    security explanation.
+    Decide whether an alert is noteworthy enough for AI analysis.
+    """
+
+    risk = alert.get("risk", "Unknown")
+    title = alert.get("title", "").lower()
+
+    # Always analyze higher-risk alerts.
+    if risk in ["High", "Medium"]:
+        return True
+
+    # Allow certain suspicious low-risk patterns.
+    noteworthy_keywords = [
+        "scan",
+        "malware",
+        "trojan",
+        "exploit",
+        "command and control",
+        "credential",
+        "brute force",
+        "suspicious",
+    ]
+
+    return any(keyword in title for keyword in noteworthy_keywords)
+
+
+def generate_explanation(alert, force=False):
+    """
+    Analyze a Network Sentinel alert with OpenAI and return
+    a structured plain-English security explanation.
     """
 
     title = alert.get("title", "Unknown Security Event")
@@ -17,115 +50,101 @@ def generate_explanation(alert):
     source = alert.get("source", "Unknown")
     target = alert.get("target", "Unknown")
 
-    title_lower = title.lower()
+    if not force and not should_analyze_alert(alert):
+        return {
+            "title": title,
+            "risk": risk,
+            "source": source,
+            "target": target,
+            "analysis": (
+                "This alert was not automatically sent for AI analysis "
+                "because it did not meet the current noteworthy-alert threshold."
+            ),
+            "why_it_matters": (
+                "Network Sentinel keeps lower-value alerts available for review "
+                "without spending AI usage on every routine event."
+            ),
+            "recommended_actions": [
+                "Review the alert if the activity is unexpected.",
+                "Monitor for repeated or higher-risk related events."
+            ],
+            "ai_analyzed": False
+        }
 
-    # Determine the type of security activity
-    if "scan" in title_lower:
-        analysis = (
-            "Network Sentinel detected activity consistent with network "
-            "scanning or reconnaissance. Scanning is commonly used to "
-            "identify active systems, open ports, and available services."
+    prompt = f"""
+You are the security explanation engine for Network Sentinel.
+
+Network Sentinel is designed for small-business IT administrators who may not
+have dedicated cybersecurity staff.
+
+Analyze the following Suricata alert:
+
+Title: {title}
+Risk: {risk}
+Source: {source}
+Target: {target}
+
+Return ONLY valid JSON using exactly this structure:
+
+{{
+  "analysis": "A concise plain-English explanation of what happened.",
+  "why_it_matters": "A concise explanation of why this may matter.",
+  "recommended_actions": [
+    "Action 1",
+    "Action 2",
+    "Action 3"
+  ]
+}}
+
+Rules:
+- Use clear language for a non-specialist IT administrator.
+- Do not exaggerate the severity.
+- Do not claim a system is compromised unless the alert proves it.
+- Clearly acknowledge when an alert may have a benign explanation.
+- Give no more than 3 recommended actions.
+- Keep the response concise.
+"""
+
+    try:
+        response = client.responses.create(
+            model=MODEL,
+            input=prompt
         )
 
-        why_it_matters = (
-            "Network scans may be legitimate administrative activity, but "
-            "unexpected scanning can also represent the reconnaissance "
-            "stage of an attack."
-        )
+        ai_result = json.loads(response.output_text)
 
-        actions = [
-            "Verify whether the source device is trusted.",
-            "Confirm that the scanning activity was authorized.",
-            "Review related firewall and Suricata events.",
-            "Monitor the source for additional suspicious activity."
-        ]
+        return {
+            "title": title,
+            "risk": risk,
+            "source": source,
+            "target": target,
+            "analysis": ai_result.get("analysis", "No analysis returned."),
+            "why_it_matters": ai_result.get(
+                "why_it_matters",
+                "No additional context returned."
+            ),
+            "recommended_actions": ai_result.get(
+                "recommended_actions",
+                []
+            ),
+            "ai_analyzed": True
+        }
 
-    elif "http" in title_lower:
-        analysis = (
-            "Network Sentinel detected unusual HTTP communication. This "
-            "may result from malformed requests, application errors, "
-            "automated scanners, or unexpected web traffic."
-        )
-
-        why_it_matters = (
-            "Repeated or unexpected HTTP anomalies can indicate application "
-            "problems, reconnaissance, or attempts to interact with a web "
-            "service in an unintended way."
-        )
-
-        actions = [
-            "Verify the source and destination systems.",
-            "Review related web server or application logs.",
-            "Check for repeated HTTP alerts from the same source.",
-            "Continue monitoring for additional suspicious activity."
-        ]
-
-    elif "dns" in title_lower:
-        analysis = (
-            "Network Sentinel detected DNS-related network activity. DNS is "
-            "normally used to translate domain names into IP addresses, but "
-            "unusual DNS activity can sometimes indicate suspicious network "
-            "communication."
-        )
-
-        why_it_matters = (
-            "Unexpected domains, unusually frequent requests, or repeated "
-            "DNS alerts may warrant additional investigation."
-        )
-
-        actions = [
-            "Review the domain or destination involved.",
-            "Verify that the source device is expected to make the request.",
-            "Monitor for repeated or unusual DNS activity."
-        ]
-
-    elif "file hosting" in title_lower:
-        analysis = (
-            "Network Sentinel detected communication with a known file-hosting "
-            "service. File-hosting services are commonly used for legitimate "
-            "software downloads and updates, but they can also be used to "
-            "distribute unwanted or malicious files."
-        )
-
-        why_it_matters = (
-            "This alert does not necessarily indicate an attack. The activity "
-            "should be reviewed in context to determine whether the connection "
-            "was expected."
-        )
-
-        actions = [
-            "Identify the application or device responsible for the connection.",
-            "Verify that the file-hosting domain is expected.",
-            "Review related Suricata alerts for suspicious activity.",
-            "Continue monitoring if the activity is unexpected."
-        ]
-
-    else:
-        analysis = (
-            "Network Sentinel detected a security event reported by Suricata. "
-            "The event should be reviewed together with the source, destination, "
-            "risk level, and surrounding network activity."
-        )
-
-        why_it_matters = (
-            "A single security alert does not always indicate malicious "
-            "activity. Reviewing the context of the event helps determine "
-            "whether additional investigation is necessary."
-        )
-
-        actions = [
-            "Verify the source and destination systems.",
-            "Review related Suricata events.",
-            "Determine whether the activity was expected.",
-            "Continue monitoring for repeated alerts."
-        ]
-
-    return {
-        "title": title,
-        "risk": risk,
-        "source": source,
-        "target": target,
-        "analysis": analysis,
-        "why_it_matters": why_it_matters,
-        "recommended_actions": actions
-    }
+    except Exception as exc:
+        return {
+            "title": title,
+            "risk": risk,
+            "source": source,
+            "target": target,
+            "analysis": "AI analysis is temporarily unavailable.",
+            "why_it_matters": (
+                "The underlying security alert is still available even though "
+                "the AI explanation service could not complete the request."
+            ),
+            "recommended_actions": [
+                "Review the original Suricata alert.",
+                "Try the AI analysis again later."
+            ],
+            "ai_analyzed": False,
+            "ai_error": str(exc)
+        }
