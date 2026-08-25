@@ -122,6 +122,10 @@ Rules:
 - Clearly acknowledge when an alert may have a benign explanation.
 - Give no more than 3 recommended actions.
 - Keep the response concise.
+- Do not include source IP addresses, destination IP addresses, customer identifiers,
+  hostnames, timestamps, or other event-specific identifiers in the explanation.
+- Explain the alert generically so the explanation can safely be reused for another
+  customer experiencing the same alert type.
 """
 
     try:

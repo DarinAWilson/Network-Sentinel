@@ -9,7 +9,7 @@ CACHE_DB = os.getenv(
     "/app/data/ai_explanations.db"
 )
 
-CACHE_VERSION = "v1"
+CACHE_VERSION = "v2"
 
 
 def get_connection():
