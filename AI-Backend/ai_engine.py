@@ -136,19 +136,35 @@ Rules:
 
         ai_result = json.loads(response.output_text)
 
+        if not isinstance(ai_result, dict):
+            raise ValueError("AI response was not a JSON object")
+
+        analysis = ai_result.get("analysis")
+        why_it_matters = ai_result.get("why_it_matters")
+        recommended_actions = ai_result.get("recommended_actions")
+
+        if not isinstance(analysis, str) or not analysis.strip():
+            raise ValueError("AI response missing valid analysis")
+
+        if not isinstance(why_it_matters, str) or not why_it_matters.strip():
+            raise ValueError("AI response missing valid why_it_matters")
+
+        if not isinstance(recommended_actions, list):
+            raise ValueError("AI response recommended_actions was not a list")
+
+        clean_actions = [
+            action.strip()
+            for action in recommended_actions
+            if isinstance(action, str) and action.strip()
+        ][:3]
+
+        if not clean_actions:
+            raise ValueError("AI response contained no valid recommended actions")
+
         reusable_explanation = {
-            "analysis": ai_result.get(
-                "analysis",
-                "No analysis returned."
-            ),
-            "why_it_matters": ai_result.get(
-                "why_it_matters",
-                "No additional context returned."
-            ),
-            "recommended_actions": ai_result.get(
-                "recommended_actions",
-                []
-            )
+            "analysis": analysis.strip(),
+            "why_it_matters": why_it_matters.strip(),
+            "recommended_actions": clean_actions
         }
 
         save_explanation(
