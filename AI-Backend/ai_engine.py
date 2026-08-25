@@ -3,11 +3,16 @@ import os
 
 from openai import OpenAI
 from ai_cache import get_cached_explanation, save_explanation
+from ai_usage import can_make_ai_request, record_ai_request
 
 
 client = OpenAI()
 
 MODEL = os.getenv("OPENAI_MODEL")
+
+MAX_OUTPUT_TOKENS = int(
+    os.getenv("AI_MAX_OUTPUT_TOKENS", "800")
+)
 
 if not MODEL:
     raise RuntimeError("OPENAI_MODEL environment variable is required")
@@ -72,7 +77,8 @@ def generate_explanation(alert, force=False):
                 "Monitor for repeated or higher-risk related events."
             ],
             "ai_analyzed": False,
-            "cache_hit": False
+            "cache_hit": False,
+            "usage_limited": False
         }
 
     cached = get_cached_explanation(alert)
@@ -87,7 +93,31 @@ def generate_explanation(alert, force=False):
             "why_it_matters": cached["why_it_matters"],
             "recommended_actions": cached["recommended_actions"],
             "ai_analyzed": True,
-            "cache_hit": True
+            "cache_hit": True,
+            "usage_limited": False
+        }
+
+    if not can_make_ai_request():
+        return {
+            "title": title,
+            "risk": risk,
+            "source": source,
+            "target": target,
+            "analysis": (
+                "AI analysis is temporarily unavailable because the daily "
+                "Network Sentinel AI usage limit has been reached."
+            ),
+            "why_it_matters": (
+                "The underlying security alert is still available for review. "
+                "The usage limit prevents unexpected API spending."
+            ),
+            "recommended_actions": [
+                "Review the original Suricata alert.",
+                "Try the AI analysis again after the daily limit resets."
+            ],
+            "ai_analyzed": False,
+            "cache_hit": False,
+            "usage_limited": True
         }
 
     prompt = f"""
@@ -131,8 +161,15 @@ Rules:
     try:
         response = client.responses.create(
             model=MODEL,
-            input=prompt
+            input=prompt,
+            max_output_tokens=MAX_OUTPUT_TOKENS
         )
+
+        usage = getattr(response, "usage", None)
+
+        input_tokens = getattr(usage, "input_tokens", 0) if usage else 0
+        output_tokens = getattr(usage, "output_tokens", 0) if usage else 0
+        total_tokens = getattr(usage, "total_tokens", 0) if usage else 0
 
         ai_result = json.loads(response.output_text)
 
@@ -167,6 +204,14 @@ Rules:
             "recommended_actions": clean_actions
         }
 
+        record_ai_request(
+            model=MODEL,
+            input_tokens=input_tokens,
+            output_tokens=output_tokens,
+            total_tokens=total_tokens,
+            success=True
+        )
+
         save_explanation(
             alert,
             reusable_explanation,
@@ -182,10 +227,16 @@ Rules:
             "why_it_matters": reusable_explanation["why_it_matters"],
             "recommended_actions": reusable_explanation["recommended_actions"],
             "ai_analyzed": True,
-            "cache_hit": False
+            "cache_hit": False,
+            "usage_limited": False
         }
 
     except Exception as exc:
+        record_ai_request(
+            model=MODEL,
+            success=False
+        )
+
         return {
             "title": title,
             "risk": risk,
@@ -202,5 +253,6 @@ Rules:
             ],
             "ai_analyzed": False,
             "cache_hit": False,
+            "usage_limited": False,
             "ai_error": str(exc)
         }
