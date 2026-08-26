@@ -4,7 +4,7 @@
     //`${window.location.protocol}//${window.location.hostname}:5000`;
 // Network Sentinel Customer Portal
 
-const API_BASE_URL = "http://192.168.1.237:5000";
+const API_BASE_URL = "http://SERVER_IP:5000";
 
 function getFriendlyAlertTitle(title) {
     const rawTitle = (title || "").toLowerCase();

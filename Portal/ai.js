@@ -2,7 +2,7 @@
 let latestAlert = null;
 
 // Network Sentinel AI Backend
-const API_BASE_URL = "http://192.168.1.237:5000";
+const API_BASE_URL = "http://SERVER_IP:5000";
 
 
 function getFriendlyAlertTitle(title) {
