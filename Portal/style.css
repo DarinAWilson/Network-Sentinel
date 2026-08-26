@@ -16,6 +16,11 @@ body {
     margin: 40px auto;
 }
 
+
+/* =======================================================
+   Header
+   ======================================================= */
+
 header {
     text-align: center;
     margin-bottom: 40px;
@@ -32,13 +37,35 @@ header p {
     font-size: 1.2rem;
 }
 
+.logo {
+    width: 150px;
+    height: auto;
+    display: block;
+    margin: 0 auto 20px auto;
+    transition: transform 0.2s ease;
+}
+
+.logo:hover {
+    transform: scale(1.05);
+}
+
+.home-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+
+/* =======================================================
+   Main Cards
+   ======================================================= */
+
 .card {
     background: #1e293b;
     border: 1px solid #334155;
     border-radius: 12px;
     padding: 25px;
     margin-bottom: 25px;
-    box-shadow: 0 5px 15px rgba(0,0,0,.35);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, .35);
 }
 
 .card h2 {
@@ -46,11 +73,185 @@ header p {
     margin-bottom: 12px;
 }
 
+.card h3 {
+    color: #f8fafc;
+    margin-bottom: 10px;
+}
+
 .card p {
     color: #cbd5e1;
     line-height: 1.6;
     margin-bottom: 20px;
 }
+
+
+/* =======================================================
+   Section Headings
+   ======================================================= */
+
+.section-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 18px;
+}
+
+.eyebrow {
+    color: #94a3b8 !important;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    margin-bottom: 6px !important;
+}
+
+
+/* =======================================================
+   Security Status
+   ======================================================= */
+
+.status-card {
+    border-left: 5px solid #38bdf8;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 105px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-loading {
+    background: #334155;
+    color: #cbd5e1;
+}
+
+.status-good {
+    background: rgba(34, 197, 94, 0.15);
+    border: 1px solid #22c55e;
+    color: #86efac;
+}
+
+.status-warning {
+    background: rgba(245, 158, 11, 0.15);
+    border: 1px solid #f59e0b;
+    color: #fcd34d;
+}
+
+.status-danger {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid #ef4444;
+    color: #fca5a5;
+}
+
+
+/* =======================================================
+   Latest Event
+   ======================================================= */
+
+.latest-event-card {
+    position: relative;
+}
+
+.risk-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 85px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.risk-low {
+    background: rgba(34, 197, 94, 0.15);
+    border: 1px solid #22c55e;
+    color: #86efac;
+}
+
+.risk-medium {
+    background: rgba(245, 158, 11, 0.15);
+    border: 1px solid #f59e0b;
+    color: #fcd34d;
+}
+
+.risk-high {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid #ef4444;
+    color: #fca5a5;
+}
+
+.risk-unknown {
+    background: #334155;
+    color: #cbd5e1;
+}
+
+.event-details {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.event-detail {
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 14px;
+}
+
+.detail-label {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+}
+
+
+/* =======================================================
+   Monitoring Grid
+   ======================================================= */
+
+.monitoring-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.monitoring-item {
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.monitoring-item h3 {
+    color: #38bdf8;
+    font-size: 1rem;
+    margin-bottom: 8px;
+}
+
+.monitoring-item p {
+    margin-bottom: 0;
+    font-size: 0.95rem;
+}
+
+
+/* =======================================================
+   Buttons
+   ======================================================= */
 
 .button,
 button {
@@ -63,11 +264,15 @@ button {
     border: none;
     cursor: pointer;
     font-size: 1rem;
+    font-weight: 600;
     transition: .2s;
 }
 
-.button:hover {
+.button:hover,
+button:hover:not(:disabled) {
     background: #0284c7;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(14, 165, 233, .35);
 }
 
 button:disabled {
@@ -75,15 +280,34 @@ button:disabled {
     cursor: not-allowed;
 }
 
-.logo {
-    width: 150px;
-    height: auto;
-    display: block;
-    margin: 0 auto 20px auto;
+.secondary-button {
+    display: inline-block;
+    background: #0f172a;
+    color: #cbd5e1;
+    text-decoration: none;
+    padding: 11px 16px;
+    border: 1px solid #475569;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: .2s;
 }
 
+.secondary-button:hover {
+    border-color: #38bdf8;
+    color: #38bdf8;
+    transform: translateY(-2px);
+}
+
+.dashboard-links {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+
+
 /* =======================================================
-   AI Security Assistant Styling
+   AI Security Assistant
    ======================================================= */
 
 select {
@@ -91,13 +315,10 @@ select {
     padding: 12px;
     margin-top: 15px;
     margin-bottom: 10px;
-
     background: #0f172a;
     color: #f8fafc;
-
     border: 1px solid #334155;
     border-radius: 8px;
-
     font-size: 1rem;
 }
 
@@ -112,7 +333,6 @@ select:focus {
     border-radius: 8px;
     padding: 20px;
     margin-top: 20px;
-
     animation: fadeIn .35s ease-in-out;
 }
 
@@ -151,17 +371,25 @@ select:focus {
     margin-top: 20px;
 }
 
-.button,
-button {
-    font-weight: 600;
+
+/* =======================================================
+   Footer
+   ======================================================= */
+
+.portal-footer {
+    text-align: center;
+    margin: 35px 0 15px;
 }
 
-.button:hover,
-button:hover:not(:disabled) {
-    background: #0284c7;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(14,165,233,.35);
+.portal-footer p {
+    color: #64748b;
+    font-size: 0.9rem;
 }
+
+
+/* =======================================================
+   Animation
+   ======================================================= */
 
 @keyframes fadeIn {
 
@@ -174,23 +402,69 @@ button:hover:not(:disabled) {
         opacity: 1;
         transform: translateY(0);
     }
-
 }
 
-.logo {
-    transition: transform 0.2s ease;
+
+/* =======================================================
+   Responsive Layout
+   ======================================================= */
+
+@media (max-width: 800px) {
+
+    .container {
+        width: 92%;
+        margin: 25px auto;
+    }
+
+    header h1 {
+        font-size: 2.3rem;
+    }
+
+    .logo {
+        width: 120px;
+    }
+
+    .section-heading {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .monitoring-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .event-details {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-links {
+        flex-direction: column;
+    }
+
+    .secondary-button {
+        text-align: center;
+    }
 }
 
-.logo:hover {
-    transform: scale(1.05);
-}
 
-.home-link {
-    text-decoration: none;
-    color: inherit;
-}
+@media (max-width: 500px) {
 
-.home-link {
-    text-decoration: none;
-    color: inherit;
+    .card {
+        padding: 20px;
+    }
+
+    header h1 {
+        font-size: 2rem;
+    }
+
+    header p {
+        font-size: 1rem;
+    }
+
+    .button,
+    button,
+    .secondary-button {
+        width: 100%;
+        text-align: center;
+    }
 }

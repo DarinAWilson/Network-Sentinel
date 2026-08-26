@@ -2,8 +2,38 @@
 let latestAlert = null;
 
 // Network Sentinel AI Backend
-// Replace SERVER_IP with the IP address of the Network Sentinel server.
-const API_BASE_URL = "http://SERVER_IP:5000";
+const API_BASE_URL = "http://192.168.1.237:5000";
+
+
+function getFriendlyAlertTitle(title) {
+    const rawTitle = (title || "").toLowerCase();
+
+    if (rawTitle.includes("applayer detect protocol only one direction")) {
+        return "One-Way Network Communication Detected";
+    }
+
+    if (rawTitle.includes("cloudflare dns over https")) {
+        return "Encrypted DNS Activity Detected";
+    }
+
+    if (rawTitle.includes("nmap")) {
+        return "Network Scan Detected";
+    }
+
+    if (rawTitle.includes("malformed http")) {
+        return "Unusual Web Traffic Detected";
+    }
+
+    if (rawTitle.includes("unable to match response to request")) {
+        return "Web Communication Issue Detected";
+    }
+
+    if (rawTitle.includes("invalid timestamp")) {
+        return "Unusual Network Packet Timing Detected";
+    }
+
+    return title || "Security Event Detected";
+}
 
 
 // Retrieve the latest alert when the page loads
@@ -19,18 +49,27 @@ fetch(`${API_BASE_URL}/api/latest-alert`)
         latestAlert = data;
 
         document.getElementById("latestAlert").innerHTML = `
-            <h3>🔎 ${data.title}</h3>
+            <h3>🔎 ${getFriendlyAlertTitle(data.title)}</h3>
 
             <p><strong>Risk:</strong> ${data.risk}</p>
-            <p><strong>Source:</strong> ${data.source}</p>
-            <p><strong>Target:</strong> ${data.target}</p>
+
+            <p>
+                <strong>Source:</strong> ${data.source}<br>
+                <strong>Target:</strong> ${data.target}
+            </p>
         `;
     })
     .catch(error => {
-        console.error(error);
+        console.error("Network Sentinel alert retrieval error:", error);
 
         document.getElementById("latestAlert").innerHTML = `
-            <p><strong>Unable to retrieve the latest security event.</strong></p>
+            <p>
+                <strong>Unable to retrieve the latest security event.</strong>
+            </p>
+
+            <p>
+                The Network Sentinel monitoring service could not be reached.
+            </p>
         `;
     });
 
@@ -39,9 +78,15 @@ fetch(`${API_BASE_URL}/api/latest-alert`)
 document.getElementById("explainButton").addEventListener("click", function () {
 
     const output = document.getElementById("aiOutput");
+    const button = document.getElementById("explainButton");
+
+    button.disabled = true;
+    button.textContent = "Analyzing...";
 
     output.innerHTML = `
-        <p><strong>🤖 Network Sentinel is analyzing the latest alert...</strong></p>
+        <p>
+            <strong>Network Sentinel is analyzing this security event...</strong>
+        </p>
     `;
 
     fetch(`${API_BASE_URL}/api/analyze-latest`)
@@ -54,50 +99,107 @@ document.getElementById("explainButton").addEventListener("click", function () {
         })
         .then(data => {
 
-            const actions = data.recommended_actions
-                .map(action => `<li>${action}</li>`)
-                .join("");
+            const actions = Array.isArray(data.recommended_actions)
+                ? data.recommended_actions
+                    .map(action => `<li>${action}</li>`)
+                    .join("")
+                : "";
 
             output.innerHTML = `
-                <h3>🛡️ ${data.title}</h3>
+                <div class="section-heading">
 
-                <p><strong>Risk Level:</strong> ${data.risk}</p>
+                    <div>
+                        <p class="eyebrow">SECURITY EVENT</p>
+
+                        <h3>
+                            ${getFriendlyAlertTitle(data.title)}
+                        </h3>
+                    </div>
+
+                    <div class="risk-badge risk-${(data.risk || "unknown").toLowerCase()}">
+                        ${data.risk || "Unknown"}
+                    </div>
+
+                </div>
+
+                <h4>What Happened</h4>
 
                 <p>
-                    <strong>Source:</strong> ${data.source}<br>
-                    <strong>Target:</strong> ${data.target}
+                    ${data.analysis}
                 </p>
 
-                <h4>🤖 Security Analysis</h4>
-                <p>${data.analysis}</p>
+                <h4>Why This Matters</h4>
 
-                <h4>⚠️ Why This Matters</h4>
-                <p>${data.why_it_matters}</p>
+                <p>
+                    ${data.why_it_matters}
+                </p>
 
-                <h4>✅ Recommended Actions</h4>
+                <h4>Recommended Next Steps</h4>
+
                 <ul>
                     ${actions}
                 </ul>
 
                 <hr>
 
+                <div class="event-details">
+
+                    <div class="event-detail">
+
+                        <span class="detail-label">
+                            Source
+                        </span>
+
+                        <span>
+                            ${data.source || "Unknown"}
+                        </span>
+
+                    </div>
+
+
+                    <div class="event-detail">
+
+                        <span class="detail-label">
+                            Target
+                        </span>
+
+                        <span>
+                            ${data.target || "Unknown"}
+                        </span>
+
+                    </div>
+
+                </div>
+
                 <p>
-                    <strong>🛡 Network Sentinel Recommendation</strong>
+                    <strong>Network Sentinel Guidance</strong>
                 </p>
 
                 <p>
-                    Review this event in context with other recent network
-                    activity and investigate further if the activity was
-                    unexpected.
+                    Review this event alongside other recent network activity.
+                    If the behavior is unexpected or continues repeatedly,
+                    further investigation may be appropriate.
                 </p>
             `;
         })
         .catch(error => {
-            console.error(error);
+            console.error("Network Sentinel analysis error:", error);
 
             output.innerHTML = `
-                <p><strong>Unable to analyze the latest security event.</strong></p>
+                <p>
+                    <strong>
+                        Unable to analyze the latest security event.
+                    </strong>
+                </p>
+
+                <p>
+                    The original security event is still available for review.
+                </p>
             `;
+        })
+        .finally(() => {
+            button.disabled = false;
+            button.textContent = "Explain This Alert";
         });
 });
 
@@ -107,7 +209,12 @@ document.getElementById("copyButton").addEventListener("click", function () {
 
     navigator.clipboard.writeText(
         document.getElementById("aiOutput").innerText
-    );
-
-    alert("AI explanation copied to clipboard.");
+    )
+    .then(() => {
+        alert("Security explanation copied to clipboard.");
+    })
+    .catch(error => {
+        console.error("Clipboard error:", error);
+        alert("Unable to copy the explanation.");
+    });
 });

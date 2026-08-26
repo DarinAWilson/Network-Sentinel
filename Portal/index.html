@@ -1,86 +1,281 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Network Sentinel</title>
+
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
 <div class="container">
 
-<header>
+    <!-- =====================================================
+         Header
+         ===================================================== -->
 
-    <a href="index.html" class="home-link">
+    <header>
 
-        <img src="images/Network-Sentinel-Logo.png"
-             alt="Network Sentinel Logo"
-             class="logo">
+        <a href="index.html" class="home-link">
 
-        <h1>Network Sentinel</h1>
+            <img
+                src="images/Network-Sentinel-Logo.png"
+                alt="Network Sentinel Logo"
+                class="logo"
+            >
 
-    </a>
+            <h1>Network Sentinel</h1>
 
-    <p>
-        AI-Assisted Network Security Monitoring
-    </p>
-
-</header>
-
-    <section class="card">
-        <h2>Security Overview</h2>
-        <p>
-            Monitor live security events, alerts, and threat activity
-            collected by Suricata and visualized through Grafana.
-        </p>
-
-        <a href="http://SERVER_IP:3002/d/ad7ngst/network-sentinel-security-overview?orgId=1" class="button" target="_blank">
-            Open Security Dashboard
-        </a>
-    </section>
-
-    <section class="card">
-        <h2>System Health</h2>
-        <p>
-            Monitor CPU usage, memory utilization, storage,
-            Docker containers, and overall server health.
-        </p>
-
-        <a href="http://SERVER_IP:3002/d/adjtzvj/network-sentinel-system-health?orgId=1" class="button" target="_blank">
-            Open System Dashboard
-        </a>
-    </section>
-
-    <section class="card">
-        <h2>Uptime Monitoring</h2>
-        <p>
-            View service availability and uptime monitoring
-            provided by Uptime Kuma.
-        </p>
-
-        <a href="http://SERVER_IP:3001/dashboard/4" class="button" target="_blank">
-            Open Uptime Kuma
         </a>
 
+        <p>
+            Security Monitoring for Your Business
+        </p>
+
+    </header>
+
+
+    <!-- =====================================================
+         Current Security Status
+         ===================================================== -->
+
+    <section class="card status-card">
+
+        <div class="section-heading">
+
+            <div>
+                <p class="eyebrow">CURRENT STATUS</p>
+
+                <h2>Security Status</h2>
+            </div>
+
+            <div
+                id="securityStatusBadge"
+                class="status-badge status-loading"
+            >
+                Checking...
+            </div>
+
+        </div>
+
+        <div id="securityStatus">
+
+            <h3 id="securityStatusTitle">
+                Checking your network security status...
+            </h3>
+
+            <p id="securityStatusMessage">
+                Network Sentinel is retrieving the latest security information.
+            </p>
+
+        </div>
+
     </section>
 
+
+    <!-- =====================================================
+         Latest Security Event
+         ===================================================== -->
+
+    <section class="card latest-event-card">
+
+        <div class="section-heading">
+
+            <div>
+                <p class="eyebrow">LATEST SECURITY EVENT</p>
+
+                <h2>Recent Activity</h2>
+            </div>
+
+            <div
+                id="riskBadge"
+                class="risk-badge risk-unknown"
+            >
+                Loading
+            </div>
+
+        </div>
+
+
+        <div id="latestEvent">
+
+            <h3 id="latestEventTitle">
+                Retrieving the latest security event...
+            </h3>
+
+            <p id="latestEventSummary">
+                Network Sentinel is checking recent network activity.
+            </p>
+
+        </div>
+
+
+        <div class="event-details">
+
+            <div class="event-detail">
+
+                <span class="detail-label">
+                    Source
+                </span>
+
+                <span id="eventSource">
+                    —
+                </span>
+
+            </div>
+
+
+            <div class="event-detail">
+
+                <span class="detail-label">
+                    Target
+                </span>
+
+                <span id="eventTarget">
+                    —
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <a
+            href="ai-assistant.html"
+            class="button"
+            id="explainAlertButton"
+        >
+            Explain This Alert
+        </a>
+
+    </section>
+
+
+    <!-- =====================================================
+         What Network Sentinel Does
+         ===================================================== -->
+
     <section class="card">
-    <h2>AI Security Assistant</h2>
 
-    <p>
-        Explain security alerts in plain English and receive
-        recommended investigation steps powered by Network Sentinel.
-    </p>
+        <p class="eyebrow">NETWORK PROTECTION</p>
 
-    <a href="ai-assistant.html"
-       class="button">
-        Launch AI Assistant
-    </a>
+        <h2>What Network Sentinel Is Watching</h2>
 
-</section>
+        <div class="monitoring-grid">
+
+            <div class="monitoring-item">
+
+                <h3>Security Events</h3>
+
+                <p>
+                    Watches network activity for suspicious behavior
+                    and security alerts.
+                </p>
+
+            </div>
+
+
+            <div class="monitoring-item">
+
+                <h3>System Health</h3>
+
+                <p>
+                    Tracks the health and availability of the
+                    Network Sentinel monitoring system.
+                </p>
+
+            </div>
+
+
+            <div class="monitoring-item">
+
+                <h3>AI Explanations</h3>
+
+                <p>
+                    Converts technical security alerts into
+                    understandable explanations and next steps.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         Advanced Monitoring
+         ===================================================== -->
+
+    <section class="card">
+
+        <p class="eyebrow">ADVANCED MONITORING</p>
+
+        <h2>Technical Dashboards</h2>
+
+        <p>
+            Additional monitoring tools are available for administrators
+            who want more detailed network and system information.
+        </p>
+
+
+        <div class="dashboard-links">
+
+            <a
+                href="http://SERVER_IP:3002/d/ad7ngst/network-sentinel-security-overview?orgId=1"
+                class="secondary-button"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Security Dashboard
+            </a>
+
+
+            <a
+                href="http://SERVER_IP:3002/d/adjtzvj/network-sentinel-system-health?orgId=1"
+                class="secondary-button"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                System Health
+            </a>
+
+
+            <a
+                href="http://SERVER_IP:3001/dashboard/4"
+                class="secondary-button"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Uptime Monitoring
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         Footer
+         ===================================================== -->
+
+    <footer class="portal-footer">
+
+        <p>
+            Network Sentinel provides AI-assisted network security
+            monitoring and alert explanations.
+        </p>
+
+    </footer>
 
 </div>
 
+<script src="portal.js"></script>
+
 </body>
+
 </html>
