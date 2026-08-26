@@ -20,14 +20,5 @@ def analyze_latest():
 
     return jsonify(explanation)
 
-
-@app.route("/api/analyze-latest/force")
-def analyze_latest_force():
-    alert = get_latest_alert()
-    explanation = generate_explanation(alert, force=True)
-
-    return jsonify(explanation)
-
-
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
