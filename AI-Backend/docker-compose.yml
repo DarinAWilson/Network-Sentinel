@@ -2,6 +2,7 @@ services:
   ai-backend:
     build: .
     container_name: ai-backend
+    command: gunicorn --bind 0.0.0.0:5000 --workers 2 --timeout 60 app:app
 
     ports:
       - "5000:5000"
@@ -13,6 +14,8 @@ services:
       LOKI_TENANT_ID: ${LOKI_TENANT_ID}
       OPENAI_API_KEY: ${OPENAI_API_KEY}
       OPENAI_MODEL: ${OPENAI_MODEL}
+      AI_DAILY_CALL_LIMIT: ${AI_DAILY_CALL_LIMIT}
+      AI_MAX_OUTPUT_TOKENS: ${AI_MAX_OUTPUT_TOKENS}
 
     volumes:
       - ai-cache-data:/app/data
