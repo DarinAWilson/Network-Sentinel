@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, jsonify
 from flask_cors import CORS
 
@@ -5,7 +7,19 @@ from loki_client import get_latest_alert
 from ai_engine import generate_explanation
 
 app = Flask(__name__)
-CORS(app)
+ALLOWED_ORIGINS = os.getenv(
+    "ALLOWED_ORIGINS",
+    "http://localhost:3000"
+).split(",")
+
+CORS(
+    app,
+    resources={
+        r"/api/*": {
+            "origins": ALLOWED_ORIGINS
+        }
+    }
+)
 
 
 @app.route("/api/latest-alert")
