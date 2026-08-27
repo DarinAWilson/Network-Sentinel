@@ -205,16 +205,32 @@ document.getElementById("explainButton").addEventListener("click", function () {
 
 
 // Copy the explanation to the clipboard
+// Copy the explanation to the clipboard
 document.getElementById("copyButton").addEventListener("click", function () {
 
     navigator.clipboard.writeText(
         document.getElementById("aiOutput").innerText
     )
     .then(() => {
-        alert("Security explanation copied to clipboard.");
+        const toast = document.getElementById("copyToast");
+
+        toast.classList.add("show");
+
+        setTimeout(() => {
+            toast.classList.remove("show");
+        }, 2000);
     })
     .catch(error => {
         console.error("Clipboard error:", error);
-        alert("Unable to copy the explanation.");
+
+        const toast = document.getElementById("copyToast");
+
+        toast.textContent = "Unable to copy explanation";
+        toast.classList.add("show");
+
+        setTimeout(() => {
+            toast.classList.remove("show");
+            toast.textContent = "Explanation copied";
+        }, 2000);
     });
 });

@@ -43,11 +43,27 @@
          Logout
          ===================================================== -->
 
-    <div style="text-align: right; margin-bottom: 20px;">
+    <div class="customer-bar">
 
-        <a href="/logout" class="secondary-button">
-            Log Out
-        </a>
+    <div class="customer-identity">
+
+        <span class="customer-label">
+            CUSTOMER
+        </span>
+
+        <strong>
+            {{ customer_name or tenant_id }}
+        </strong>
+
+        <span class="tenant-id">
+            {{ tenant_id }}
+        </span>
+
+    </div>
+
+    <a href="/logout" class="secondary-button">
+        Log Out
+    </a>
 
     </div>
 

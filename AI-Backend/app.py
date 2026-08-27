@@ -28,6 +28,10 @@ SECRET_KEY = os.getenv("FLASK_SECRET_KEY")
 AUTH_USERNAME = os.getenv("NS_AUTH_USERNAME")
 AUTH_PASSWORD_HASH_B64 = os.getenv("NS_AUTH_PASSWORD_HASH_B64")
 AUTH_TENANT_ID = os.getenv("NS_AUTH_TENANT_ID")
+CUSTOMER_NAME = os.getenv(
+    "NS_CUSTOMER_NAME",
+    AUTH_TENANT_ID
+)
 
 AUTH_PASSWORD_HASH = (
     base64.b64decode(AUTH_PASSWORD_HASH_B64).decode()
@@ -139,14 +143,22 @@ def logout():
 @login_required
 def portal_home():
 
-    return render_template("index.html")
+    return render_template(
+        "index.html",
+        customer_name=CUSTOMER_NAME,
+        tenant_id=session.get("tenant_id")
+    )
 
 
 @app.route("/alert-analysis")
 @login_required
 def alert_analysis():
 
-    return render_template("ai-assistant.html")
+    return render_template(
+        "ai-assistant.html",
+        customer_name=CUSTOMER_NAME,
+        tenant_id=session.get("tenant_id")
+    )
 
 
 @app.route("/api/latest-alert")

@@ -520,3 +520,83 @@ select:focus {
     border-radius: 8px;
     margin-bottom: 20px;
 }
+
+/* =======================================================
+   Customer Identity
+   ======================================================= */
+
+.customer-bar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+.customer-identity {
+    text-align: right;
+}
+
+.customer-label {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 3px;
+}
+
+.customer-identity strong {
+    display: block;
+    color: #f8fafc;
+}
+
+.tenant-id {
+    display: block;
+    color: #64748b;
+    font-size: 0.8rem;
+    margin-top: 2px;
+}
+
+@media (max-width: 500px) {
+
+    .customer-bar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .customer-identity {
+        text-align: left;
+    }
+}
+
+/* =======================================================
+   Copy Confirmation Toast
+   ======================================================= */
+
+.copy-toast {
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
+
+    background: #1e293b;
+    color: #f8fafc;
+
+    border: 1px solid #38bdf8;
+    border-radius: 8px;
+
+    padding: 12px 18px;
+
+    font-weight: 600;
+
+    opacity: 0;
+    transform: translateY(10px);
+    pointer-events: none;
+
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.copy-toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}

@@ -21,6 +21,7 @@ services:
       NS_AUTH_USERNAME: ${NS_AUTH_USERNAME}
       NS_AUTH_PASSWORD_HASH_B64: ${NS_AUTH_PASSWORD_HASH_B64}
       NS_AUTH_TENANT_ID: ${NS_AUTH_TENANT_ID}
+      NS_CUSTOMER_NAME: ${NS_CUSTOMER_NAME}
 
     volumes:
       - ai-cache-data:/app/data
