@@ -1,3 +1,4 @@
+import base64
 import os
 from functools import wraps
 
@@ -25,7 +26,13 @@ app = Flask(
 
 SECRET_KEY = os.getenv("FLASK_SECRET_KEY")
 AUTH_USERNAME = os.getenv("NS_AUTH_USERNAME")
-AUTH_PASSWORD_HASH = os.getenv("NS_AUTH_PASSWORD_HASH")
+AUTH_PASSWORD_HASH_B64 = os.getenv("NS_AUTH_PASSWORD_HASH_B64")
+
+AUTH_PASSWORD_HASH = (
+    base64.b64decode(AUTH_PASSWORD_HASH_B64).decode()
+    if AUTH_PASSWORD_HASH_B64
+    else None
+)
 
 if not SECRET_KEY:
     raise RuntimeError("FLASK_SECRET_KEY environment variable is required")
@@ -34,7 +41,9 @@ if not AUTH_USERNAME:
     raise RuntimeError("NS_AUTH_USERNAME environment variable is required")
 
 if not AUTH_PASSWORD_HASH:
-    raise RuntimeError("NS_AUTH_PASSWORD_HASH environment variable is required")
+    raise RuntimeError(
+        "NS_AUTH_PASSWORD_HASH_B64 environment variable is required"
+    )
 
 
 app.secret_key = SECRET_KEY
