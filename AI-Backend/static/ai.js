@@ -203,34 +203,61 @@ document.getElementById("explainButton").addEventListener("click", function () {
         });
 });
 
-
 // Copy the explanation to the clipboard
-// Copy the explanation to the clipboard
-document.getElementById("copyButton").addEventListener("click", function () {
+document.getElementById("copyButton").addEventListener("click", async function () {
 
-    navigator.clipboard.writeText(
-        document.getElementById("aiOutput").innerText
-    )
-    .then(() => {
+    const text = document.getElementById("aiOutput").innerText;
     const toast = document.getElementById("copyToast");
 
-    toast.classList.add("show");
+    try {
 
-    setTimeout(() => {
-        toast.classList.remove("show");
-    }, 1500);
-})
-    .catch(error => {
-        console.error("Clipboard error:", error);
+        // Preferred method for HTTPS / secure browser contexts
+        if (navigator.clipboard && window.isSecureContext) {
 
-        const toast = document.getElementById("copyToast");
+            await navigator.clipboard.writeText(text);
 
-        toast.textContent = "Unable to copy explanation";
+        } else {
+
+            // Fallback for local HTTP deployments
+            const textArea = document.createElement("textarea");
+
+            textArea.value = text;
+
+            textArea.style.position = "fixed";
+            textArea.style.left = "-9999px";
+            textArea.style.top = "-9999px";
+
+            document.body.appendChild(textArea);
+
+            textArea.focus();
+            textArea.select();
+
+            const copied = document.execCommand("copy");
+
+            document.body.removeChild(textArea);
+
+            if (!copied) {
+                throw new Error("Fallback copy command failed");
+            }
+        }
+
+        toast.textContent = "Copied!";
         toast.classList.add("show");
 
         setTimeout(() => {
             toast.classList.remove("show");
-            toast.textContent = "Explanation copied";
+        }, 1500);
+
+    } catch (error) {
+
+        console.error("Clipboard error:", error);
+
+        toast.textContent = "Unable to copy";
+        toast.classList.add("show");
+
+        setTimeout(() => {
+            toast.classList.remove("show");
+            toast.textContent = "Copied!";
         }, 2000);
-    });
+    }
 });
