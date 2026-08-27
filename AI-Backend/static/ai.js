@@ -212,14 +212,14 @@ document.getElementById("copyButton").addEventListener("click", function () {
         document.getElementById("aiOutput").innerText
     )
     .then(() => {
-        const toast = document.getElementById("copyToast");
+    const toast = document.getElementById("copyToast");
 
-        toast.classList.add("show");
+    toast.classList.add("show");
 
-        setTimeout(() => {
-            toast.classList.remove("show");
-        }, 2000);
-    })
+    setTimeout(() => {
+        toast.classList.remove("show");
+    }, 1500);
+})
     .catch(error => {
         console.error("Clipboard error:", error);
 

@@ -574,29 +574,41 @@ select:focus {
    Copy Confirmation Toast
    ======================================================= */
 
-.copy-toast {
-    position: fixed;
-    right: 25px;
-    bottom: 25px;
+.explanation-card {
+    position: relative;
+}
 
-    background: #1e293b;
+.copy-toast {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%) scale(0.95);
+
+    background: #0f172a;
     color: #f8fafc;
 
     border: 1px solid #38bdf8;
-    border-radius: 8px;
+    border-radius: 10px;
 
-    padding: 12px 18px;
+    padding: 14px 24px;
 
-    font-weight: 600;
+    font-size: 1rem;
+    font-weight: 700;
+
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.45);
 
     opacity: 0;
-    transform: translateY(10px);
     pointer-events: none;
 
-    transition: opacity 0.2s ease, transform 0.2s ease;
+    transition:
+        opacity 0.25s ease,
+        transform 0.25s ease;
+
+    z-index: 10;
 }
 
 .copy-toast.show {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate(-50%, -50%) scale(1);
 }
