@@ -171,6 +171,14 @@ def latest_alert():
         get_latest_alert(tenant_id)
     )
 
+@app.route("/api/session-info")
+@login_required
+def session_info():
+    return jsonify({
+        "username": session.get("username"),
+        "tenant_id": session.get("tenant_id")
+    })
+
 
 @app.route("/api/analyze-latest")
 @login_required
