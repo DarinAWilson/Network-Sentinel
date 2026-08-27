@@ -468,3 +468,55 @@ select:focus {
         text-align: center;
     }
 }
+
+/* =======================================================
+   Login
+   ======================================================= */
+
+.login-container {
+    max-width: 520px;
+}
+
+.login-card {
+    padding: 30px;
+}
+
+.login-card label {
+    display: block;
+    color: #cbd5e1;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.login-card input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+
+    background: #0f172a;
+    color: #f8fafc;
+
+    border: 1px solid #475569;
+    border-radius: 8px;
+
+    font-size: 1rem;
+}
+
+.login-card input:focus {
+    outline: none;
+    border-color: #38bdf8;
+}
+
+.login-button {
+    width: 100%;
+}
+
+.login-error {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid #ef4444;
+    color: #fca5a5;
+
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
