@@ -20,6 +20,7 @@ services:
       FLASK_SECRET_KEY: ${FLASK_SECRET_KEY}
       NS_AUTH_USERNAME: ${NS_AUTH_USERNAME}
       NS_AUTH_PASSWORD_HASH_B64: ${NS_AUTH_PASSWORD_HASH_B64}
+      NS_AUTH_TENANT_ID: ${NS_AUTH_TENANT_ID}
 
     volumes:
       - ai-cache-data:/app/data

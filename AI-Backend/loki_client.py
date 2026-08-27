@@ -1,20 +1,20 @@
 import json
-import os
 import time
+
 import requests
 
 
 LOKI_URL = "http://loki:3100"
-LOKI_TENANT_ID = os.getenv("LOKI_TENANT_ID")
-
-if not LOKI_TENANT_ID:
-    raise RuntimeError("LOKI_TENANT_ID environment variable is required")
 
 
-def get_latest_alert():
+def get_latest_alert(tenant_id):
     """
-    Query Loki for the latest Suricata security alert.
+    Query Loki for the latest Suricata security alert
+    belonging to the authenticated tenant.
     """
+
+    if not tenant_id:
+        raise ValueError("A tenant ID is required for Loki queries")
 
     end_time = time.time_ns()
 
@@ -35,7 +35,7 @@ def get_latest_alert():
         f"{LOKI_URL}/loki/api/v1/query_range",
         params=params,
         headers={
-            "X-Scope-OrgID": LOKI_TENANT_ID
+            "X-Scope-OrgID": tenant_id
         },
         timeout=10
     )

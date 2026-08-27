@@ -27,6 +27,7 @@ app = Flask(
 SECRET_KEY = os.getenv("FLASK_SECRET_KEY")
 AUTH_USERNAME = os.getenv("NS_AUTH_USERNAME")
 AUTH_PASSWORD_HASH_B64 = os.getenv("NS_AUTH_PASSWORD_HASH_B64")
+AUTH_TENANT_ID = os.getenv("NS_AUTH_TENANT_ID")
 
 AUTH_PASSWORD_HASH = (
     base64.b64decode(AUTH_PASSWORD_HASH_B64).decode()
@@ -43,6 +44,11 @@ if not AUTH_USERNAME:
 if not AUTH_PASSWORD_HASH:
     raise RuntimeError(
         "NS_AUTH_PASSWORD_HASH_B64 environment variable is required"
+    )
+
+if not AUTH_TENANT_ID:
+    raise RuntimeError(
+        "NS_AUTH_TENANT_ID environment variable is required"
     )
 
 
@@ -109,6 +115,7 @@ def login():
 
             session["authenticated"] = True
             session["username"] = AUTH_USERNAME
+            session["tenant_id"] = AUTH_TENANT_ID
 
             return redirect(url_for("portal_home"))
 
@@ -146,14 +153,20 @@ def alert_analysis():
 @login_required
 def latest_alert():
 
-    return jsonify(get_latest_alert())
+    tenant_id = session.get("tenant_id")
+
+    return jsonify(
+        get_latest_alert(tenant_id)
+    )
 
 
 @app.route("/api/analyze-latest")
 @login_required
 def analyze_latest():
 
-    alert = get_latest_alert()
+    tenant_id = session.get("tenant_id")
+
+    alert = get_latest_alert(tenant_id)
     explanation = generate_explanation(alert)
 
     return jsonify(explanation)
