@@ -2,6 +2,7 @@ import json
 import os
 
 from openai import OpenAI
+
 from ai_cache import get_cached_explanation, save_explanation
 from ai_usage import can_make_ai_request, record_ai_request
 
@@ -26,6 +27,16 @@ def should_analyze_alert(alert):
     risk = alert.get("risk", "Unknown")
     title = alert.get("title", "").lower()
 
+    threat_intel = alert.get("threat_intel", {})
+    known_bad_match = threat_intel.get(
+        "known_bad_match",
+        False
+    )
+
+    # A threat-intelligence match is always noteworthy.
+    if known_bad_match:
+        return True
+
     # Always analyze higher-risk alerts.
     if risk in ["High", "Medium"]:
         return True
@@ -42,7 +53,10 @@ def should_analyze_alert(alert):
         "suspicious",
     ]
 
-    return any(keyword in title for keyword in noteworthy_keywords)
+    return any(
+        keyword in title
+        for keyword in noteworthy_keywords
+    )
 
 
 def generate_explanation(alert, force=False):
@@ -53,10 +67,41 @@ def generate_explanation(alert, force=False):
     Reuses cached generic explanations when available.
     """
 
-    title = alert.get("title", "Unknown Security Event")
-    risk = alert.get("risk", "Unknown")
-    source = alert.get("source", "Unknown")
-    target = alert.get("target", "Unknown")
+    title = alert.get(
+        "title",
+        "Unknown Security Event"
+    )
+
+    risk = alert.get(
+        "risk",
+        "Unknown"
+    )
+
+    source = alert.get(
+        "source",
+        "Unknown"
+    )
+
+    target = alert.get(
+        "target",
+        "Unknown"
+    )
+
+    threat_intel = alert.get(
+        "threat_intel",
+        {}
+    )
+
+    known_bad_match = threat_intel.get(
+        "known_bad_match",
+        False
+    )
+
+    threat_intel_source = threat_intel.get(
+        "source_name",
+        "Configured threat-intelligence feed"
+    )
+
 
     if not force and not should_analyze_alert(alert):
         return {
@@ -64,6 +109,7 @@ def generate_explanation(alert, force=False):
             "risk": risk,
             "source": source,
             "target": target,
+            "known_bad_match": known_bad_match,
             "analysis": (
                 "This alert was not automatically sent for AI analysis "
                 "because it did not meet the current noteworthy-alert threshold."
@@ -81,6 +127,7 @@ def generate_explanation(alert, force=False):
             "usage_limited": False
         }
 
+
     cached = get_cached_explanation(alert)
 
     if cached:
@@ -89,6 +136,7 @@ def generate_explanation(alert, force=False):
             "risk": risk,
             "source": source,
             "target": target,
+            "known_bad_match": known_bad_match,
             "analysis": cached["analysis"],
             "why_it_matters": cached["why_it_matters"],
             "recommended_actions": cached["recommended_actions"],
@@ -97,12 +145,14 @@ def generate_explanation(alert, force=False):
             "usage_limited": False
         }
 
+
     if not can_make_ai_request():
         return {
             "title": title,
             "risk": risk,
             "source": source,
             "target": target,
+            "known_bad_match": known_bad_match,
             "analysis": (
                 "AI analysis is temporarily unavailable because the daily "
                 "Network Sentinel AI usage limit has been reached."
@@ -120,18 +170,19 @@ def generate_explanation(alert, force=False):
             "usage_limited": True
         }
 
+
     prompt = f"""
 You are the security explanation engine for Network Sentinel.
 
 Network Sentinel is designed for small-business IT administrators who may not
 have dedicated cybersecurity staff.
 
-Analyze the following Suricata alert:
+Analyze the following security alert:
 
 Title: {title}
 Risk: {risk}
-Source: {source}
-Target: {target}
+Threat Intelligence Match: {known_bad_match}
+Threat Intelligence Source: {threat_intel_source}
 
 Return ONLY valid JSON using exactly this structure:
 
@@ -148,15 +199,23 @@ Return ONLY valid JSON using exactly this structure:
 Rules:
 - Use clear language for a non-specialist IT administrator.
 - Do not exaggerate the severity.
-- Do not claim a system is compromised unless the alert proves it.
+- Do not claim a system is compromised unless the evidence proves it.
 - Clearly acknowledge when an alert may have a benign explanation.
 - Give no more than 3 recommended actions.
 - Keep the response concise.
-- Do not include source IP addresses, destination IP addresses, customer identifiers,
-  hostnames, timestamps, or other event-specific identifiers in the explanation.
-- Explain the alert generically so the explanation can safely be reused for another
-  customer experiencing the same alert type.
+- Do not include source IP addresses, destination IP addresses,
+  customer identifiers, hostnames, timestamps, or other
+  event-specific identifiers in the explanation.
+- Explain the alert generically so the explanation can safely
+  be reused for another customer experiencing the same alert type.
+- If Threat Intelligence Match is true, explain that the source
+  or destination matched the configured known-bad threat-intelligence feed.
+- Treat a known-bad match as meaningful additional context,
+  but do not claim compromise solely because of the match.
+- If Threat Intelligence Match is false, do not mention
+  threat intelligence.
 """
+
 
     try:
         response = client.responses.create(
@@ -165,44 +224,99 @@ Rules:
             max_output_tokens=MAX_OUTPUT_TOKENS
         )
 
-        usage = getattr(response, "usage", None)
+        usage = getattr(
+            response,
+            "usage",
+            None
+        )
 
-        input_tokens = getattr(usage, "input_tokens", 0) if usage else 0
-        output_tokens = getattr(usage, "output_tokens", 0) if usage else 0
-        total_tokens = getattr(usage, "total_tokens", 0) if usage else 0
+        input_tokens = (
+            getattr(usage, "input_tokens", 0)
+            if usage else 0
+        )
 
-        ai_result = json.loads(response.output_text)
+        output_tokens = (
+            getattr(usage, "output_tokens", 0)
+            if usage else 0
+        )
+
+        total_tokens = (
+            getattr(usage, "total_tokens", 0)
+            if usage else 0
+        )
+
+
+        ai_result = json.loads(
+            response.output_text
+        )
+
 
         if not isinstance(ai_result, dict):
-            raise ValueError("AI response was not a JSON object")
+            raise ValueError(
+                "AI response was not a JSON object"
+            )
 
-        analysis = ai_result.get("analysis")
-        why_it_matters = ai_result.get("why_it_matters")
-        recommended_actions = ai_result.get("recommended_actions")
 
-        if not isinstance(analysis, str) or not analysis.strip():
-            raise ValueError("AI response missing valid analysis")
+        analysis = ai_result.get(
+            "analysis"
+        )
 
-        if not isinstance(why_it_matters, str) or not why_it_matters.strip():
-            raise ValueError("AI response missing valid why_it_matters")
+        why_it_matters = ai_result.get(
+            "why_it_matters"
+        )
 
-        if not isinstance(recommended_actions, list):
-            raise ValueError("AI response recommended_actions was not a list")
+        recommended_actions = ai_result.get(
+            "recommended_actions"
+        )
+
+
+        if (
+            not isinstance(analysis, str)
+            or not analysis.strip()
+        ):
+            raise ValueError(
+                "AI response missing valid analysis"
+            )
+
+
+        if (
+            not isinstance(why_it_matters, str)
+            or not why_it_matters.strip()
+        ):
+            raise ValueError(
+                "AI response missing valid why_it_matters"
+            )
+
+
+        if not isinstance(
+            recommended_actions,
+            list
+        ):
+            raise ValueError(
+                "AI response recommended_actions was not a list"
+            )
+
 
         clean_actions = [
             action.strip()
             for action in recommended_actions
-            if isinstance(action, str) and action.strip()
+            if isinstance(action, str)
+            and action.strip()
         ][:3]
 
+
         if not clean_actions:
-            raise ValueError("AI response contained no valid recommended actions")
+            raise ValueError(
+                "AI response contained no valid recommended actions"
+            )
+
 
         reusable_explanation = {
             "analysis": analysis.strip(),
             "why_it_matters": why_it_matters.strip(),
             "recommended_actions": clean_actions
         }
+
 
         record_ai_request(
             model=MODEL,
@@ -212,24 +326,30 @@ Rules:
             success=True
         )
 
+
         save_explanation(
             alert,
             reusable_explanation,
             MODEL
         )
 
+
         return {
             "title": title,
             "risk": risk,
             "source": source,
             "target": target,
+            "known_bad_match": known_bad_match,
             "analysis": reusable_explanation["analysis"],
             "why_it_matters": reusable_explanation["why_it_matters"],
-            "recommended_actions": reusable_explanation["recommended_actions"],
+            "recommended_actions": reusable_explanation[
+                "recommended_actions"
+            ],
             "ai_analyzed": True,
             "cache_hit": False,
             "usage_limited": False
         }
+
 
     except Exception as exc:
         record_ai_request(
@@ -242,7 +362,10 @@ Rules:
             "risk": risk,
             "source": source,
             "target": target,
-            "analysis": "AI analysis is temporarily unavailable.",
+            "known_bad_match": known_bad_match,
+            "analysis": (
+                "AI analysis is temporarily unavailable."
+            ),
             "why_it_matters": (
                 "The underlying security alert is still available even though "
                 "the AI explanation service could not complete the request."

@@ -9,13 +9,18 @@ CACHE_DB = os.getenv(
     "/app/data/ai_explanations.db"
 )
 
-CACHE_VERSION = "v2"
+CACHE_VERSION = "v3"
 
 
 def get_connection():
-    os.makedirs(os.path.dirname(CACHE_DB), exist_ok=True)
+    os.makedirs(
+        os.path.dirname(CACHE_DB),
+        exist_ok=True
+    )
 
-    connection = sqlite3.connect(CACHE_DB)
+    connection = sqlite3.connect(
+        CACHE_DB
+    )
 
     connection.execute(
         """
@@ -39,14 +44,50 @@ def get_connection():
 
 
 def build_cache_key(alert):
-    title = alert.get("title", "Unknown Security Event")
-    risk = alert.get("risk", "Unknown")
+    """
+    Build a reusable cache key for an alert.
 
-    return f"{CACHE_VERSION}|{risk}|{title}".lower()
+    Threat-intelligence matches are kept separate from
+    non-matching alerts so cached explanations do not
+    accidentally omit important threat-intelligence context.
+    """
+
+    title = alert.get(
+        "title",
+        "Unknown Security Event"
+    )
+
+    risk = alert.get(
+        "risk",
+        "Unknown"
+    )
+
+    threat_intel = alert.get(
+        "threat_intel",
+        {}
+    )
+
+    known_bad_match = threat_intel.get(
+        "known_bad_match",
+        False
+    )
+
+    return (
+        f"{CACHE_VERSION}|"
+        f"{risk}|"
+        f"{title}|"
+        f"known_bad={known_bad_match}"
+    ).lower()
 
 
 def get_cached_explanation(alert):
-    cache_key = build_cache_key(alert)
+    """
+    Retrieve a previously generated reusable explanation.
+    """
+
+    cache_key = build_cache_key(
+        alert
+    )
 
     connection = get_connection()
 
@@ -71,7 +112,9 @@ def get_cached_explanation(alert):
         return {
             "analysis": row[0],
             "why_it_matters": row[1],
-            "recommended_actions": json.loads(row[2]),
+            "recommended_actions": json.loads(
+                row[2]
+            ),
             "model": row[3],
             "created_at": row[4]
         }
@@ -80,8 +123,21 @@ def get_cached_explanation(alert):
         connection.close()
 
 
-def save_explanation(alert, explanation, model):
-    cache_key = build_cache_key(alert)
+def save_explanation(
+    alert,
+    explanation,
+    model
+):
+    """
+    Save a generic reusable AI explanation.
+
+    Customer-specific data such as IP addresses and tenant
+    identifiers are intentionally not stored in this cache.
+    """
+
+    cache_key = build_cache_key(
+        alert
+    )
 
     connection = get_connection()
 
@@ -103,14 +159,26 @@ def save_explanation(alert, explanation, model):
             """,
             (
                 cache_key,
-                alert.get("title", "Unknown Security Event"),
-                alert.get("risk", "Unknown"),
+                alert.get(
+                    "title",
+                    "Unknown Security Event"
+                ),
+                alert.get(
+                    "risk",
+                    "Unknown"
+                ),
                 explanation["analysis"],
                 explanation["why_it_matters"],
-                json.dumps(explanation["recommended_actions"]),
+                json.dumps(
+                    explanation[
+                        "recommended_actions"
+                    ]
+                ),
                 model,
                 CACHE_VERSION,
-                datetime.now(timezone.utc).isoformat()
+                datetime.now(
+                    timezone.utc
+                ).isoformat()
             )
         )
 
