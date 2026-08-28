@@ -95,6 +95,7 @@ function updateSecurityStatus(risk) {
 
 function getEventSummary(data) {
     const noiseReduction = data.noise_reduction || {};
+
     const repeatCount = Number(
         noiseReduction.repeat_count || 1
     );
@@ -115,6 +116,147 @@ function getEventSummary(data) {
         "Network Sentinel detected this activity during network monitoring."
     );
 }
+
+function updateMonitoringHealth(data) {
+    const badge = document.getElementById(
+        "monitoringHealthBadge"
+    );
+
+    const message = document.getElementById(
+        "monitoringHealthMessage"
+    );
+
+    const backendHealth = document.getElementById(
+        "backendHealth"
+    );
+
+    const telemetryHealth = document.getElementById(
+        "telemetryHealth"
+    );
+
+    const lokiHealth = document.getElementById(
+        "lokiHealth"
+    );
+
+    const healthWindow = document.getElementById(
+        "healthWindow"
+    );
+
+    badge.className = "status-badge";
+
+    switch ((data.status || "").toLowerCase()) {
+        case "healthy":
+            badge.classList.add("status-good");
+            badge.textContent = "Healthy";
+            message.textContent =
+                "Network Sentinel is operating normally and receiving recent monitoring data.";
+            break;
+
+        case "degraded":
+            badge.classList.add("status-warning");
+            badge.textContent = "Degraded";
+            message.textContent =
+                "Network Sentinel is online, but recent monitoring data has not been detected.";
+            break;
+
+        default:
+            badge.classList.add("status-danger");
+            badge.textContent = "Offline";
+            message.textContent =
+                "Network Sentinel cannot currently confirm that monitoring services are operating normally.";
+    }
+
+    backendHealth.textContent =
+        data.backend === true
+            ? "Online"
+            : "Unavailable";
+
+    telemetryHealth.textContent =
+        data.recent_telemetry === true
+            ? "Receiving data"
+            : "No recent data";
+
+    lokiHealth.textContent =
+        data.loki === true
+            ? "Available"
+            : "Unavailable";
+
+    if (data.telemetry_window_minutes) {
+        healthWindow.textContent =
+            `Telemetry health is based on activity received within the last ` +
+            `${data.telemetry_window_minutes} minutes.`;
+    } else {
+        healthWindow.textContent = "";
+    }
+}
+
+function setMonitoringHealthUnavailable() {
+    const badge = document.getElementById(
+        "monitoringHealthBadge"
+    );
+
+    badge.className =
+        "status-badge status-danger";
+
+    badge.textContent =
+        "Unavailable";
+
+    document.getElementById(
+        "monitoringHealthMessage"
+    ).textContent =
+        "Network Sentinel could not retrieve monitoring health information.";
+
+    document.getElementById(
+        "backendHealth"
+    ).textContent =
+        "Unknown";
+
+    document.getElementById(
+        "telemetryHealth"
+    ).textContent =
+        "Unknown";
+
+    document.getElementById(
+        "lokiHealth"
+    ).textContent =
+        "Unknown";
+
+    document.getElementById(
+        "healthWindow"
+    ).textContent = "";
+}
+
+
+// =====================================================
+// Monitoring Health
+// =====================================================
+
+fetch(`${API_BASE_URL}/api/health`)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(
+                "Unable to retrieve monitoring health."
+            );
+        }
+
+        return response.json();
+    })
+    .then(data => {
+        updateMonitoringHealth(data);
+    })
+    .catch(error => {
+        console.error(
+            "Network Sentinel health error:",
+            error
+        );
+
+        setMonitoringHealthUnavailable();
+    });
+
+
+// =====================================================
+// Latest Security Event
+// =====================================================
 
 fetch(`${API_BASE_URL}/api/latest-alert`)
     .then(response => {

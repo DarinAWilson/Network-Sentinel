@@ -40,30 +40,30 @@
 
 
     <!-- =====================================================
-         Logout
+         Customer Identity / Logout
          ===================================================== -->
 
     <div class="customer-bar">
 
-    <div class="customer-identity">
+        <div class="customer-identity">
 
-        <span class="customer-label">
-            CUSTOMER
-        </span>
+            <span class="customer-label">
+                CUSTOMER
+            </span>
 
-        <strong>
-            {{ customer_name or tenant_id }}
-        </strong>
+            <strong>
+                {{ customer_name or tenant_id }}
+            </strong>
 
-        <span class="tenant-id">
-            {{ tenant_id }}
-        </span>
+            <span class="tenant-id">
+                {{ tenant_id }}
+            </span>
 
-    </div>
+        </div>
 
-    <a href="/logout" class="secondary-button">
-        Log Out
-    </a>
+        <a href="/logout" class="secondary-button">
+            Log Out
+        </a>
 
     </div>
 
@@ -88,7 +88,6 @@
 
             </div>
 
-
             <div
                 id="securityStatusBadge"
                 class="status-badge status-loading"
@@ -97,7 +96,6 @@
             </div>
 
         </div>
-
 
         <div id="securityStatus">
 
@@ -110,6 +108,92 @@
             </p>
 
         </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         Monitoring Health
+         ===================================================== -->
+
+    <section class="card">
+
+        <div class="section-heading">
+
+            <div>
+
+                <p class="eyebrow">
+                    MONITORING HEALTH
+                </p>
+
+                <h2>
+                    Network Sentinel Health
+                </h2>
+
+            </div>
+
+            <div
+                id="monitoringHealthBadge"
+                class="status-badge status-loading"
+            >
+                Checking...
+            </div>
+
+        </div>
+
+
+        <p id="monitoringHealthMessage">
+            Network Sentinel is checking the health of your monitoring services.
+        </p>
+
+
+        <div class="monitoring-grid">
+
+            <div class="monitoring-item">
+
+                <h3>
+                    Backend
+                </h3>
+
+                <p id="backendHealth">
+                    Checking...
+                </p>
+
+            </div>
+
+
+            <div class="monitoring-item">
+
+                <h3>
+                    Telemetry
+                </h3>
+
+                <p id="telemetryHealth">
+                    Checking...
+                </p>
+
+            </div>
+
+
+            <div class="monitoring-item">
+
+                <h3>
+                    Log Service
+                </h3>
+
+                <p id="lokiHealth">
+                    Checking...
+                </p>
+
+            </div>
+
+        </div>
+
+        <p
+            id="healthWindow"
+            class="health-window"
+        >
+        </p>
 
     </section>
 
@@ -133,7 +217,6 @@
                 </h2>
 
             </div>
-
 
             <div
                 id="riskBadge"
