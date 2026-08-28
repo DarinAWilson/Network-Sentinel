@@ -45,6 +45,7 @@ def classify_alert(alert):
     Determine how an alert should be presented to the customer.
 
     Raw alerts remain stored in Loki regardless of classification.
+    Higher-risk alerts always override noise-reduction rules.
     """
 
     title = alert.get(
@@ -52,6 +53,34 @@ def classify_alert(alert):
         "Unknown Security Event"
     )
 
+    risk = alert.get(
+        "risk",
+        "Unknown"
+    )
+
+    # High-risk alerts should never be reduced or deprioritized.
+    if risk == "High":
+        return {
+            "policy": "keep",
+            "priority": "high",
+            "reason": (
+                "High-risk alerts are always retained and presented "
+                "with elevated priority."
+            ),
+        }
+
+    # Medium-risk alerts should also remain visible.
+    if risk == "Medium":
+        return {
+            "policy": "keep",
+            "priority": "normal",
+            "reason": (
+                "Medium-risk alerts remain visible even when the "
+                "signature would otherwise qualify for noise reduction."
+            ),
+        }
+
+    # Noise reduction only applies to lower-risk alerts.
     if title in NOISY_SIGNATURES:
         rule = NOISY_SIGNATURES[title]
 
