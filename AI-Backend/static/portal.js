@@ -59,7 +59,8 @@ function updateSecurityStatus(risk) {
         case "high":
             badge.classList.add("status-danger");
             badge.textContent = "Attention";
-            title.textContent = "A high-risk security event was detected";
+            title.textContent =
+                "A high-risk security event was detected";
             message.textContent =
                 "Network Sentinel detected activity that should be reviewed promptly.";
             break;
@@ -67,7 +68,8 @@ function updateSecurityStatus(risk) {
         case "medium":
             badge.classList.add("status-warning");
             badge.textContent = "Review";
-            title.textContent = "Security activity needs review";
+            title.textContent =
+                "Security activity needs review";
             message.textContent =
                 "Network Sentinel detected activity that may require investigation.";
             break;
@@ -75,7 +77,8 @@ function updateSecurityStatus(risk) {
         case "low":
             badge.classList.add("status-good");
             badge.textContent = "Monitoring";
-            title.textContent = "No urgent threats detected";
+            title.textContent =
+                "No urgent threats detected";
             message.textContent =
                 "Network Sentinel is actively monitoring your network. The latest event is low risk.";
             break;
@@ -83,54 +86,104 @@ function updateSecurityStatus(risk) {
         default:
             badge.classList.add("status-loading");
             badge.textContent = "Unknown";
-            title.textContent = "Security status unavailable";
+            title.textContent =
+                "Security status unavailable";
             message.textContent =
                 "Network Sentinel could not determine the current security status.";
     }
 }
 
+function getEventSummary(data) {
+    const noiseReduction = data.noise_reduction || {};
+    const repeatCount = Number(
+        noiseReduction.repeat_count || 1
+    );
+
+    const isRepetitive =
+        noiseReduction.is_repetitive === true &&
+        repeatCount > 1;
+
+    if (isRepetitive) {
+        return (
+            `Network Sentinel detected this activity ` +
+            `${repeatCount} times in the last hour. ` +
+            `Repeated events are grouped to reduce alert noise.`
+        );
+    }
+
+    return (
+        "Network Sentinel detected this activity during network monitoring."
+    );
+}
+
 fetch(`${API_BASE_URL}/api/latest-alert`)
     .then(response => {
         if (!response.ok) {
-            throw new Error("Unable to retrieve latest security event.");
+            throw new Error(
+                "Unable to retrieve latest security event."
+            );
         }
 
         return response.json();
     })
     .then(data => {
-        const riskBadge = document.getElementById("riskBadge");
+        const riskBadge =
+            document.getElementById("riskBadge");
 
-        document.getElementById("latestEventTitle").textContent =
+        document.getElementById(
+            "latestEventTitle"
+        ).textContent =
             getFriendlyAlertTitle(data.title);
 
-        document.getElementById("latestEventSummary").textContent =
-            "Network Sentinel detected this activity during network monitoring.";
+        document.getElementById(
+            "latestEventSummary"
+        ).textContent =
+            getEventSummary(data);
 
-        document.getElementById("eventSource").textContent =
+        document.getElementById(
+            "eventSource"
+        ).textContent =
             data.source || "Unknown";
 
-        document.getElementById("eventTarget").textContent =
+        document.getElementById(
+            "eventTarget"
+        ).textContent =
             data.target || "Unknown";
 
-        riskBadge.textContent = data.risk || "Unknown";
+        riskBadge.textContent =
+            data.risk || "Unknown";
+
         riskBadge.className =
             `risk-badge ${getRiskClass(data.risk)}`;
 
-        updateSecurityStatus(data.risk);
+        updateSecurityStatus(
+            data.risk
+        );
     })
     .catch(error => {
-        console.error("Network Sentinel portal error:", error);
+        console.error(
+            "Network Sentinel portal error:",
+            error
+        );
 
-        document.getElementById("latestEventTitle").textContent =
+        document.getElementById(
+            "latestEventTitle"
+        ).textContent =
             "Unable to retrieve the latest security event";
 
-        document.getElementById("latestEventSummary").textContent =
+        document.getElementById(
+            "latestEventSummary"
+        ).textContent =
             "The monitoring service could not be reached.";
 
-        document.getElementById("riskBadge").textContent =
+        document.getElementById(
+            "riskBadge"
+        ).textContent =
             "Unavailable";
 
-        document.getElementById("riskBadge").className =
+        document.getElementById(
+            "riskBadge"
+        ).className =
             "risk-badge risk-unknown";
 
         updateSecurityStatus(null);
