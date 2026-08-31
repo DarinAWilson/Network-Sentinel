@@ -41,6 +41,8 @@ CUSTOMER_NAME = os.getenv(
 
 LOKI_URL = "http://loki:3100"
 
+SESSION_TIMEOUT_SECONDS = 900
+
 
 AUTH_PASSWORD_HASH = (
     base64.b64decode(
@@ -112,6 +114,30 @@ def login_required(view_function):
             return redirect(
                 url_for("login")
             )
+
+        now = time.time()
+
+        last_activity = session.get(
+            "last_activity"
+        )
+
+        if (
+            last_activity is not None
+            and now - last_activity > SESSION_TIMEOUT_SECONDS
+        ):
+
+            session.clear()
+
+            if request.path.startswith("/api/"):
+                return jsonify({
+                    "error": "Session expired"
+                }), 401
+
+            return redirect(
+                url_for("login")
+            )
+
+        session["last_activity"] = now
 
         return view_function(
             *args,
@@ -227,6 +253,9 @@ def login():
             session["authenticated"] = True
             session["username"] = AUTH_USERNAME
             session["tenant_id"] = AUTH_TENANT_ID
+            session["last_activity"] = time.time()
+
+            session.permanent = False
 
             return redirect(
                 url_for("portal_home")
