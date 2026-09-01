@@ -28,6 +28,16 @@ SMTP_FROM = os.getenv(
     SMTP_USERNAME
 )
 
+SMTP_USE_AUTH = os.getenv(
+    "SMTP_USE_AUTH",
+    "true"
+).lower() in (
+    "1",
+    "true",
+    "yes",
+    "on"
+)
+
 
 def send_email(
     recipient,
@@ -38,16 +48,6 @@ def send_email(
     Send a plain-text Network Sentinel notification email.
     """
 
-    if not SMTP_USERNAME:
-        raise RuntimeError(
-            "SMTP_USERNAME is required"
-        )
-
-    if not SMTP_APP_PASSWORD:
-        raise RuntimeError(
-            "SMTP_APP_PASSWORD is required"
-        )
-
     if not SMTP_FROM:
         raise RuntimeError(
             "SMTP_FROM is required"
@@ -57,6 +57,17 @@ def send_email(
         raise ValueError(
             "A notification recipient is required"
         )
+
+    if SMTP_USE_AUTH:
+        if not SMTP_USERNAME:
+            raise RuntimeError(
+                "SMTP_USERNAME is required when SMTP authentication is enabled"
+            )
+
+        if not SMTP_APP_PASSWORD:
+            raise RuntimeError(
+                "SMTP_APP_PASSWORD is required when SMTP authentication is enabled"
+            )
 
     message = EmailMessage()
 
@@ -80,10 +91,11 @@ def send_email(
 
         server.ehlo()
 
-        server.login(
-            SMTP_USERNAME,
-            SMTP_APP_PASSWORD
-        )
+        if SMTP_USE_AUTH:
+            server.login(
+                SMTP_USERNAME,
+                SMTP_APP_PASSWORD
+            )
 
         server.send_message(
             message
