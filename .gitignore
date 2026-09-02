@@ -45,3 +45,9 @@ Docker/secrets/
 Sentinel-Node/.env
 Sentinel-Node/secrets/
 Sentinel-Node/logs/
+
+# Text Files
+Future/.txt 
+
+#Notification Workers
+AI-Backend/notification-worker.log
