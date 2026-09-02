@@ -7,7 +7,13 @@ AI_BACKEND_DIR="/home/daw/Network-Sentinel/AI-Backend"
 
 echo "Starting Network Sentinel backup..."
 
-docker exec ai-backend python backup_network_sentinel.py
+docker exec \
+    --user "$(id -u):$(id -g)" \
+    ai-backend \
+    python backup_network_sentinel.pydocker exec \
+    --user "$(id -u):$(id -g)" \
+    ai-backend \
+    python backup_network_sentinel.py
 
 LATEST_BACKUP=$(find "$BACKUP_ROOT" \
     -mindepth 1 \
