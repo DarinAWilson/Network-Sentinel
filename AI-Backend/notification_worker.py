@@ -1,9 +1,9 @@
+import json
 import os
 import time
 
 import requests
 
-from loki_client import get_latest_alert
 from notification_manager import (
     notify_health_status,
     notify_high_risk_alert,
@@ -19,6 +19,13 @@ TENANT_ID = os.getenv(
 CUSTOMER_NAME = os.getenv(
     "NS_CUSTOMER_NAME",
     TENANT_ID
+)
+
+ALERT_LOOKBACK_MINUTES = int(
+    os.getenv(
+        "NOTIFICATION_ALERT_LOOKBACK_MINUTES",
+        "10"
+    )
 )
 
 
@@ -115,6 +122,106 @@ def get_health_status(
     return "healthy"
 
 
+def get_recent_high_risk_alerts(
+    tenant_id,
+    minutes=10
+):
+    """
+    Retrieve High-risk Suricata alerts seen within
+    the configured lookback window.
+
+    Suricata severity 1 maps to Network Sentinel High risk.
+    """
+
+    if not tenant_id:
+        raise ValueError(
+            "A tenant ID is required for Loki queries"
+        )
+
+    end_time = time.time_ns()
+
+    start_time = (
+        end_time
+        - (
+            minutes
+            * 60
+            * 1_000_000_000
+        )
+    )
+
+    query = (
+        '{job="suricata"} '
+        '| json '
+        '| event_type="alert" '
+        '| alert_severity="1"'
+    )
+
+    response = requests.get(
+        f"{LOKI_URL}/loki/api/v1/query_range",
+        params={
+            "query": query,
+            "start": start_time,
+            "end": end_time,
+            "limit": 100,
+            "direction": "backward"
+        },
+        headers={
+            "X-Scope-OrgID": tenant_id
+        },
+        timeout=10
+    )
+
+    response.raise_for_status()
+
+    results = (
+        response
+        .json()
+        .get("data", {})
+        .get("result", [])
+    )
+
+    alerts = []
+
+    for stream in results:
+        for value in stream.get(
+            "values",
+            []
+        ):
+            try:
+                event = json.loads(
+                    value[1]
+                )
+            except (
+                json.JSONDecodeError,
+                IndexError,
+                TypeError
+            ):
+                continue
+
+            alert_data = event.get(
+                "alert",
+                {}
+            )
+
+            alerts.append({
+                "title": alert_data.get(
+                    "signature",
+                    "Unknown Alert"
+                ),
+                "risk": "High",
+                "source": event.get(
+                    "src_ip",
+                    "Unknown"
+                ),
+                "target": event.get(
+                    "dest_ip",
+                    "Unknown"
+                )
+            })
+
+    return alerts
+
+
 def run_notification_check():
     """
     Perform one Network Sentinel notification check.
@@ -126,18 +233,31 @@ def run_notification_check():
         )
 
     # -------------------------------------------------
-    # Security alert check
+    # High-risk security alert checks
     # -------------------------------------------------
 
-    alert = get_latest_alert(
-        TENANT_ID
-    )
+    high_risk_alerts = []
 
-    alert_sent = notify_high_risk_alert(
-        tenant_id=TENANT_ID,
-        customer_name=CUSTOMER_NAME,
-        alert=alert
-    )
+    if check_loki_health():
+        high_risk_alerts = (
+            get_recent_high_risk_alerts(
+                tenant_id=TENANT_ID,
+                minutes=ALERT_LOOKBACK_MINUTES
+            )
+        )
+
+    alert_emails_sent = 0
+
+    for alert in high_risk_alerts:
+
+        sent = notify_high_risk_alert(
+            tenant_id=TENANT_ID,
+            customer_name=CUSTOMER_NAME,
+            alert=alert
+        )
+
+        if sent:
+            alert_emails_sent += 1
 
     # -------------------------------------------------
     # Monitoring health check
@@ -156,7 +276,8 @@ def run_notification_check():
     print(
         f"Notification check complete. "
         f"Health={health_status}, "
-        f"Alert email sent={alert_sent}, "
+        f"High-risk alerts found={len(high_risk_alerts)}, "
+        f"Alert emails sent={alert_emails_sent}, "
         f"Health email sent={health_sent}"
     )
 
